@@ -1,0 +1,26 @@
+#!/bin/bash
+
+CHEZMOI={{ .chezmoi.sourceDir }}
+
+if [ -n "$ELLIPSES_REAPPLY" ]; then
+    exit 0
+fi
+
+$CHEZMOI/ellipses-tools/generate-chezmoi-links.sh
+
+diff="$(chezmoi diff --no-pager)"
+
+if [ -n "$diff" ]; then
+    chezmoi diff
+
+    while true; do
+        read -p "Do you want to apply the changes now? [Y/n]"
+        case $yn in
+                [Yy]* ) ;;
+                [Nn]* ) exit;;
+        esac
+    done
+
+    export ELLIPSES_REAPPLY=true
+    chezmoi -v apply
+fi

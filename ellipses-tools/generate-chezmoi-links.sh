@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 CHEZMOI=$(chezmoi source-path)
 real_ellipses=".ellipses"
 abs_dotted_ellipses="$(chezmoi source-path "$HOME/$real_ellipses")"
@@ -11,9 +13,7 @@ rm -fv $(fgrep -R -l --include "symlink_*.tmpl" "$dotted_ellipses" "$CHEZMOI") \
 is_dotted() {
     if [[ "$1" =~ ^([a-z]+_)?([a-z]+_)?dot_(.*) ]]; then
         echo "${BASH_REMATCH[3]%.tmpl}"
-        return 0
     fi
-    return 1
 }
 
 get_real_name() {
@@ -21,11 +21,11 @@ get_real_name() {
     undotted_file="$(is_dotted "$basename")"
 
     if [ -n "$undotted_file" ]; then
-        echo ".$undotted_file"
-        return 0
+        echo ".${undotted_file}"
+    elif [[ "$1" =~ ^([a-z]+_)?([a-z]+_)?(.*) ]]; then
+        echo "${BASH_REMATCH[3]%.tmpl}"
     else
         echo "${basename%.tmpl}"
-        return 1
     fi
 }
 
@@ -39,16 +39,30 @@ generate_link() {
     df=$(dirname "$f")
     name=$(get_real_name "$bf")
     e_rel_path="$real_ellipses/$fullpkg/$name"
+    e_abs_path=$HOME/$e_rel_path
     rel_path="$(realpath --relative-to="$CHEZMOI/$dotted_ellipses/$pkg" "$df")"
 
-    lnk="${bf#*_protected}"
-    lnk="${bf#*symlink_}"
+    if ! [ -d "$CHEZMOI/$rel_path" ]; then
+        echo "Path $CHEZMOI/$rel_path does not exist"
+        echo "Ensure you added it and with correct permissions"
+        echo "BUt absolute exists $(dirname $e_abs_path) ?"
+        exit 1
+    fi
+
+    if [[ "$name" == ".ellipses_linkdirs" ]]; then
+        return
+    fi
+
+    lnk="$name"
+    [[ "${lnk:0:1}" == '.' ]] && lnk="dot_${lnk#.}"
     lnk="$rel_path/symlink_$lnk"
-    lnk="${lnk%.tmpl}"
 
     if [[ "$bf" == symlink_* ]] || [[ "$bf" == encrypted_* ]] ||
-       [[ "$bf" == *.tmpl ]] || [ -d "$f" ]; then
-        path=$HOME/$e_rel_path
+       [[ "$bf" == *.tmpl ]] ||
+       ([ -d "$f" ] &&
+        ! [ -f "$e_abs_path/.ellipses_linkdir" ] &&
+        ! grep -qs '\b'"$name"'\b' "$real_ellipses/$pkg/.ellipses_linkdirs"); then
+        path="$e_abs_path"
         tgt="{{ .chezmoi.homedir }}/$e_rel_path"
     else
         rel=$(realpath --relative-to="$CHEZMOI" "$f")
@@ -90,10 +104,18 @@ visit_directory() {
         elif [ -d "$f" ]; then
             subdir="$(get_real_name "$(basename "$f")")"
 
-            if [ -L "$HOME/$subdir" ]; then
+            if [ -f "$HOME/$real_ellipses/$fullpkg/$subdir/.ellipses-ignore" ]; then
                 continue
-            elif [ -d "$HOME/$subdir" ]; then
+            fi
+
+            if [ -d "$HOME/$allsubs/$subdir" ]; then
+                if [ -L "$HOME/$allsubs/$subdir" ]; then
+                    continue
+                fi
+                presubs=$allsubs
+                allsubs+="$subdir/"
                 visit_directory "$f"
+                allsubs=$presubs
             else
                 generate_link "$f" "$current_pkg" "$fullpkg"
             fi
@@ -109,5 +131,6 @@ visit_directory() {
 for i in "$CHEZMOI/$dotted_ellipses"/*; do
     current_pkg=
     fullpkg=
+    allsubs=
     visit_directory "$i"
 done

@@ -1,0 +1,202 @@
+[user]
+	name = Marco Trevisan (Treviño)
+	email = mail@3v1n0.net
+	signingkey = D4C501DA48EB797A081750939449C2F50996635F
+[color]
+	ui = auto
+[pack]
+	threads = 0
+[push]
+	default = current
+
+[sendemail]
+	from = Marco Trevisan <mail@3v1n0.net>
+	smtpserver = smtp.gmail.com
+	smtpuser = trevi55@gmail.com
+	smtpencryption = tls
+#	smtppass = PASSWORD
+	chainreplyto = false
+	smtpserverport = 587
+
+[diff]
+    tool = meld
+    tool = "Sublime Merge"
+[difftool]
+    prompt = false
+[difftool "meld"]
+    cmd = meld "$LOCAL" "$REMOTE"
+[difftool "Sublime Merge"]
+    cmd = smerge mergetool "$LOCAL" "$REMOTE" -o "$MERGED"
+
+[merge]
+    tool = meld
+    tool = "Sublime Merge"
+[mergetool "meld"]
+    cmd = meld "$LOCAL" "$MERGED" "$REMOTE" --output "$MERGED"
+
+[mergetool "Sublime Merge"]
+    cmd = smerge mergetool "$BASE" "$REMOTE" "$LOCAL" -o "$MERGED"
+
+[alias]
+    added = diff --cached
+    archive-snapshot = "!f() { git archive -v --prefix=$(basename $(git rev-parse --show-toplevel))-$(git describe --abbrev=0)+git$(git show -s --format=%cs $(git describe) | sed 's/-//g')/ $(git describe) --output=/tmp/$(basename $(git rev-parse --show-toplevel))-$(git describe --abbrev=0)+git$(git show -s --format=%cs $(git describe) | sed 's/-//g').tar.xz; }; f"
+    archive-snapshot-ref = "!f() { git archive -v --prefix=$(basename $(git rev-parse --show-toplevel))-$(git describe)/ $(git describe) --output=/tmp/$(basename $(git rev-parse --show-toplevel))-$(git describe).tar.xz; }; f"
+    br = branch
+    bp = "!gbp"
+    branch-rename-remote = "!f() { git push $1 $1/$2:refs/heads/$3 :$2; }; f"
+    branch-remove-remote = "!f() { git push $1 --delete $2; }; f"
+    # find-release-tag = "!f(){ git log --oneline $1...$2 --reverse --pretty='%D' | grep -m1 '^tag: ' }; f"
+    find-release-tag = "!f(){ git tag --contains $1 | head -n1; }; f"
+    build-package = "!gbp"
+    ci = commit
+    co = checkout
+    contains = branch --contains
+    current-branch = !git branch | sed -n '/\\* /s///p'
+    di = diff
+    diffc = diff --cached
+    diff-side-by-side = "!f() { git difftool $* -y -x 'colordiff -y -W $(tput cols)' | /usr/bin/less -R; }; f"
+    diffh = diff HEAD
+    diffstat = diff --stat
+    diffpaste = "!f(){ git diff $* | pastebinit -f diff; }; f"
+    discard = checkout --
+    distclean = "clean -dxfi"
+    exec = "!exec "
+    files = log --pretty='format:%h - %ad' --name-status --relative-date
+    fixup = commit --all --amend --reuse-message=HEAD
+    follow = log --follow --patch-with-stat --ignore-all-space --
+    graph-pretty = log --all --graph --pretty --oneline --decorate
+    graph = log --graph --pretty=format:'%Cred%h%Creset-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit --date=relative --all
+    glog = log --graph --decorate=full
+    lab = "!lab"
+    last = log -1 HEAD
+    last-ten = log -n 10 --first-parent --oneline
+    logall = log --branches=*
+    log-removed = log --all --full-history --
+    last-branches =  branch -v --sort=-committerdate
+    mr  = "!f() { git fetch -fu ${2:-$(git remote |grep ^upstream || echo origin)} refs/merge-requests/$1/head:MR/$1 && git checkout MR/$1; }; f"
+    mr-clean = "!git for-each-ref refs/heads/MR/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
+    patch-queue = "!gbp pq"
+    pq = "!gbp pq"
+    pq-export = "!gbp pq export --no-patch-numbers"
+    pq-import = "!gbp pq import"
+    pq-commits-to-patches = "!gbp pq export --no-patch-numbers"
+    pq-patches-to-commits = "!gbp pq import"
+    pq-apply = "!gbp pq apply"
+    pq-drop = "!gbp pq drop"
+    pq-rebase = "!gbp pq rebase"
+    pq-switch = "!gbp pq switch"
+    pr  = "!f() { git fetch -fu ${2:-$(git remote |grep ^upstream || echo origin)} refs/pull/$1/head:PR/$1 && git checkout PR/$1; }; f"
+    pr-clean = "!git for-each-ref refs/heads/PR/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
+    restore = "checkout --"
+    revert = "checkout --"
+    revno = !git rev-list --all | wc -l
+    rmmerged = "!git branch --merged | grep --verbose '\\*\\|master\\|dev' | xargs -n 1 git branch -d"
+    showtag = show-ref
+    smerge = "merge --no-ff --no-commit"
+    st = status
+    stat = status
+    switch = checkout
+    tip = rev-parse --verify HEAD
+    unadd = reset HEAD --
+    uncommit = "!bash -c 'echo "Uncommittng: " && git rev-list --format=%B --max-count=1 HEAD && read -p "[Y/N] " -N 1 reply && ([ "$reply" == "Y" ] || [ "$reply" == "y" ]) && echo && git reset --soft HEAD^'"
+    uncommit-quick = reset --soft HEAD^
+    undo = git revert --strategy resolve
+    unstage = reset HEAD --
+    unstash = stash pop
+    vis = !gitg
+    visual = !gitg
+
+    merge-repo = "!mergeRepo() { \
+        [ $# -ne 3 ] && echo \"Three parameters required, <remote URI> <new branch> <new dir>\" && exit 1; \
+        git remote add newRepo $1; \
+        git fetch newRepo; \
+        git branch \"$2\" newRepo/master; \
+        git checkout \"$2\"; \
+        mkdir -vp \"${GIT_PREFIX}$3\"; \
+        git ls-tree -z --name-only HEAD | xargs -0 -I {} git mv {} \"${GIT_PREFIX}$3\"/; \
+        git commit -m \"Moved files to '${GIT_PREFIX}$3'\"; \
+        git checkout master; git merge --allow-unrelated-histories --no-edit -s recursive -X no-renames \"$2\"; \
+        git branch -D \"$2\"; git remote remove newRepo; \
+        }; \
+        mergeRepo"
+	amend-to = "!f() { SHA=`git rev-parse \"$1\"`; git commit --fixup \"$SHA\" && GIT_SEQUENCE_EDITOR=true git rebase --interactive --autosquash \"$SHA^\"; }; f"
+
+[url "git+ssh://3v1n0@git.launchpad.net/"]
+    insteadof = lp:
+
+[url "git+ssh://3v1n0@git.launchpad.net/~3v1n0/+git/"]
+    insteadof = lpme:
+
+[url "https://github.com/"]
+    insteadof = github-https:
+
+[url "git@github.com:"]
+    insteadof = github:
+
+[url "git@github.com:3v1n0/"]
+    insteadof = gh:
+
+[url "https://gitlab.com/"]
+    insteadof = gitlab:
+
+[url "git@gitlab.com:3v1n0/"]
+    insteadof = gl:
+
+[url "git@github.com:"]
+    insteadof = github-ssh:
+
+[url "ssh://marcotrevi@git.gnome.org/git/"]
+    insteadof = gnome-git:
+
+[url "git@gitlab.gnome.org:GNOME/"]
+    insteadof = gnome:
+
+[url "git@gitlab.gnome.org:3v1n0/"]
+    insteadof = gnome-mine:
+
+[url "git@gitlab.freedesktop.org:"]
+    insteadof = fdo:
+
+[url "git@gitlab.freedesktop.org:3v1n0/"]
+    insteadof = fdo-mine:
+
+[url "ssh://git@pagure.io/forks/marcotrevisan/"]
+    insteadof = pagure:
+
+[url "git@salsa.debian.org:3v1n0-guest/"]
+    insteadof = salsa-mine:
+
+[url "git@salsa.debian.org:"]
+    insteadof = salsa:
+
+[bz]
+    browser = firefox3
+
+# [gitg.custom-link "issues"]
+#     regexp=!([0-9]+)
+#     replacement=https://gitlab.gnome.org/GNOME/gitg/merge_requests/\1
+#     color = orange
+# [gitg.custom-link "merge.request"]
+#     regexp=#([0-9]+)
+#     replacement=https://gitlab.gnome.org/GNOME/gitg/merge_requests/\1
+#     color = green
+[core]
+    excludesfile = ~/.config/git/global-gitignore
+    #pager = /usr/bin/less
+    #pager = "$(command -v tig && echo \"sed 's/\x1b\[[0-9;]*m//g' | tig\" || echo /usr/bin/less)"
+    #pager = "$(command -v tig &>/dev/null && echo "sed 's/akjfeahfekah//g' | tig" || echo /usr/bin/less)"
+    #pager = "sed 's/\x1b\[[0-9;]*m//g' | tig"
+[tar "tar.bz2"]
+	command = bzip2 -c
+[tar "tar.xz"]
+	command = xz -c
+#[sequence]
+#	editor = interactive-rebase-tool
+
+[interactive-rebase-tool]
+	inputMoveSelectionDown = J
+	inputMoveSelectionUp = K
+	inputMoveUp = k
+	inputMoveDown = j
+	inputMoveLeft = h
+	inputMoveRight = l

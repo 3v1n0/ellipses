@@ -9,8 +9,11 @@ rm -fv $(fgrep -R -l --include "symlink_*.tmpl" "$dotted_ellipses" "$CHEZMOI") \
     $(fgrep -R -l --include "symlink_*" "/$real_ellipses/" "$CHEZMOI")
 
 is_dotted() {
-    [[ "$1" =~ ^([a-z]+_)?([a-z]+_)?dot_(.*) ]]
-    echo "${BASH_REMATCH[3]%.tmpl}"
+    if [[ "$1" =~ ^([a-z]+_)?([a-z]+_)?dot_(.*) ]]; then
+        echo "${BASH_REMATCH[3]%.tmpl}"
+        return 0
+    fi
+    return 1
 }
 
 get_real_name() {
@@ -19,10 +22,10 @@ get_real_name() {
 
     if [ -n "$undotted_file" ]; then
         echo ".$undotted_file"
-        return 1
+        return 0
     else
         echo "${basename%.tmpl}"
-        return 0
+        return 1
     fi
 }
 
@@ -34,29 +37,34 @@ generate_link() {
 
     bf=$(basename "$f")
     df=$(dirname "$f")
+    name=$(get_real_name "$bf")
+    e_rel_path="$real_ellipses/$fullpkg/$name"
     rel_path="$(realpath --relative-to="$CHEZMOI/$dotted_ellipses/$pkg" "$df")"
-    lnk="$rel_path/symlink_${bf#*private_}"
-    lnk="${lnk%.tmpl}"
-    name="$(get_real_name "$bf")"
 
-    if [[ "$bf" == encrypted_* ]] || [[ "$bf" == *.tmpl ]] || [ -d "$f" ]; then
-        rel=$real_ellipses/$fullpkg/$name
-        echo "Name is $name, ($rel)"
-        path=$HOME/$rel
-        tgt="{{ .chezmoi.homedir }}/$rel"
+    lnk="${bf#*_protected}"
+    lnk="${bf#*symlink_}"
+    lnk="$rel_path/symlink_$lnk"
+    lnk="${lnk%.tmpl}"
+
+    if [[ "$bf" == symlink_* ]] || [[ "$bf" == encrypted_* ]] ||
+       [[ "$bf" == *.tmpl ]] || [ -d "$f" ]; then
+        path=$HOME/$e_rel_path
+        tgt="{{ .chezmoi.homedir }}/$e_rel_path"
     else
         rel=$(realpath --relative-to="$CHEZMOI" "$f")
         path=$CHEZMOI/$rel
         tgt="{{ .chezmoi.sourceDir }}/$rel"
     fi
 
+    tgt="${tgt//\/\//\/}"
+    path="${path//\/\//\/}"
     echo "Linking $(chezmoi execute-template "$tgt") -> $path ($lnk)"
 
     if [[ "$tgt" == *"{{"*"}}"* ]]; then
-        echo "$tgt" > "$CHEZMOI/$lnk.tmpl"
-    else
-        echo "$tgt" > "$CHEZMOI/$lnk"
+        lnk="$lnk.tmpl"
     fi
+
+    echo "$tgt" > "$CHEZMOI/$lnk"
 }
 
 visit_directory() {

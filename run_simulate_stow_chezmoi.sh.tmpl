@@ -11,16 +11,20 @@ $CHEZMOI/ellipses-tools/generate-chezmoi-links.sh
 diff="$(chezmoi diff --no-pager)"
 
 if [ -n "$diff" ]; then
+    echo
     chezmoi diff
+    confirmed=
 
     while true; do
-        read -p "Do you want to apply the changes now? [Y/n]"
+        read -p "Do you want to apply the changes now? [Y/n] "
         case $yn in
-                [Yy]* ) ;;
-                [Nn]* ) exit;;
+                [Yy]* ) confirmed=true ;;
+                [Nn]* ) exit 1;;
         esac
     done
 
-    export ELLIPSES_REAPPLY=true
-    chezmoi -v apply
+    if [ -n "$confirmed" ]; then
+        export ELLIPSES_REAPPLY=true
+        chezmoi -v apply
+    fi
 fi

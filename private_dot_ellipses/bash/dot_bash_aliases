@@ -1,0 +1,50 @@
+# Treviño's Bash Alias file
+alias mypkg='dh_make -e mail@3v1n0.net -s -n && ./configure --prefix=/usr --mandir=\${prefix}/share/man --infodir=\${prefix}/share/info && debuild binary'
+alias stdpkg="dh_make -e mail@3v1n0.net -s -n && debuild binary"
+alias stdconfig='echo \"CFLAGS=\"$(CFLAGS) -Wl,-z,defs\" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info"; CFLAGS="$(CFLAGS) -Wl,-z,defs" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info'
+alias myconfig='CFLAGS="-O2 -march=pentium-m -pipe -fomit-frame-pointer" CXXFLAGS="${CFLAGS}" CHOST="i686-pc-linux-gnu" ./configure --host=i686-pc-linux-gnu --build=i686-pc-linux-gnu --prefix=/usr --mandir=\${prefix}/share/man --infodir=\${prefix}/share/info'
+#alias make-deb='debuild binary'
+alias make-deb='DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -b -d --no-pre-clean -ui -uc'
+alias dh_builddeb="fakeroot dh_builddeb"
+alias windowclass='xprop | grep WM_CLASS | cut -d \" -f 4'
+alias apt-install='sudo apt-get install'
+alias apt-update='sudo apt-get update'
+alias apt-upgrade='sudo apt-get upgrade'
+alias apt-show='apt-cache show'
+alias apt-search='apt-cache search'
+alias apt-source="apt-get source"
+alias deinterlace-mplayer='mplayer -vf pullup,pp=lb'
+alias showhw="sudo lshw"
+#alias dpkg -i="sudo dpkg -r"
+#alias dpkg -r="sudo dpkg -r"
+#alias apt-get="sudo apt-get"
+#alias apt-get install="sudo apt-get install"
+#alias apt-get upgrade="sudo apt-get upgrade"
+#alias apt-get remove="sudo apt-get remove"
+#alias apt-get dist-upgrade="sudo apt-get dist-upgrade"
+alias rm='rm -i'
+alias M='more'
+alias L='less'
+alias H='head'
+alias T='tail'
+alias ..='cd ..'
+alias ...='../..'
+alias ....='../../..'
+alias .....='../../../..'
+alias c="cd"
+#alias man='man --pager=/usr/bin/most'
+alias scp-insecure="scp -o StrictHostKeyChecking=no"
+alias ssh-insecure="ssh -o StrictHostKeyChecking=no"
+alias pastebin='pastebinit -a "Marco Trevisan (Treviño)" -b "paste.ubuntu.com"'
+alias diff="diff --color=auto"
+alias diffc="diff --color=always"
+#alias diff="diff --color=auto"
+#alias cc-color="colorgcc $(which cc)"
+alias gcc-color="colorgcc $(which gcc)"
+alias g++-color="colorgcc $(which g++)"
+alias c++-color="colorgcc $(which c++)"
+#alias make="if (which colormake); then colormake $*; else make $*; fi"
+alias llh="ls -lh"
+alias llht="ls -lht"
+alias remove_core_files="mkdir /tmp/cores; for i in $(locate --basename --regex "^core$"); do if [ -f "$i" ]; then sudo mv -v $i /tmp/cores/${i//\//_}; fi; done"
+alias weechat-trevi-cloud-print="openssl s_client -connect cloud.trevi.me:3553 < /dev/null 2>/dev/null | openssl x509 -sha512 -fingerprint -noout | tr -d ':' | tr 'A-Z' 'a-z' | cut -d = -f 2"

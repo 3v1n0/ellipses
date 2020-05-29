@@ -306,7 +306,10 @@ if [ -n "$BASH_VERSION" ] && [ -z "$BASH_IT" ] &&
   PROMPT_COMMAND="_3v1_set_prompt; $PROMPT_COMMAND"
 fi
 
-if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]]; then
+# Set this to disable ZINIT
+# MY_NO_ZINIT=true
+
+if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; then
   if [ ! -f $MY_ZINIT_PATH/bin/zinit.zsh ] && ((${+commands[git]})); then
     __zinit_just_installed=1
     mkdir -p $MY_ZINIT_PATH && chmod g-rwX "$MY_ZINIT_PATH" && \
@@ -359,6 +362,11 @@ __my_default_zsh_settings() {
   HIST_STAMPS="dd/mm/yyyy"
   # export HISTFILE="/tmp/zsh_history"
   # unsetopt extendedhistory
+
+  # Maybe set incappendhistorytime and unset sharehistory
+
+  # Complete the first result on tab
+  # setopt menu_complete
 
   # Don't show "want to see all completions and split them by group name"
   zstyle ':completion:*' list-prompt   ''
@@ -628,8 +636,7 @@ __my_plugins_loaded_callback() {
 
 __my_zsh_plugins_load() {
   if [ -z "$ZSH" ]; then
-    __my_default_zsh_settings
-    return
+    _my_omz_plugins=()
   fi
 
   if [[ -v ZINIT[HOME_DIR] ]]; then
@@ -651,11 +658,13 @@ __my_zsh_plugins_load() {
 
       __my_plugins_loaded_callback
     fi
-  else
+  elif [ -n "$ZSH" ]; then
     # TODO support cloning and loading _my_zsh_custom_plugins
     plugins=_my_omz_plugins source $ZSH/oh-my-zsh.sh
     __my_plugins_loaded_callback
     __my_theme_loaded_callback
+  else
+    __my_default_zsh_settings
   fi
 }
 
@@ -664,6 +673,13 @@ if [ -n "$ZSH_VERSION" ]; then
     __my_theme_preload_setup
 
   if [[ -v ZINIT[BIN_DIR] ]]; then
+    # Use this not to load OMZ stuff
+    # MY_NO_OMZ=1
+    if [ -n "$MY_NO_OMZ" ]; then
+      __my_zsh_plugins_load
+      return
+    fi
+
     typeset -g DISABLE_AUTO_UPDATE=true
     typeset -a plugins=()
     compinit() {
@@ -689,6 +705,7 @@ if [ -n "$ZSH_VERSION" ]; then
     __my_zsh_plugins_load
   else
     unset ZSH
+    __my_default_zsh_settings
   fi
 fi
 

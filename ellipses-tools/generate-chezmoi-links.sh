@@ -30,6 +30,27 @@ get_real_name() {
     echo "${basename%.tmpl}"
 }
 
+make_link() {
+    tgt="${1//\/\//\/}"
+    lnk="$2"
+    path="${3//\/\//\/}"
+    lnk_dir=$4
+
+    [[ "${lnk:0:1}" == '.' ]] \
+        && lnk="dot_${lnk#.}"
+
+    lnk="$lnk_dir/symlink_$lnk"
+
+    [ -z "$ELLIPSES_SILENT" ] && \
+        echo "Linking $(chezmoi execute-template "$tgt") -> $path ($lnk)"
+
+    if [[ "$tgt" == *"{{"*"}}"* ]]; then
+        lnk="$lnk.tmpl"
+    fi
+
+    echo "$tgt" > "$CHEZMOI/$lnk"
+}
+
 generate_link() {
     local sf="$1"
     local pkg="$2"
@@ -54,10 +75,6 @@ generate_link() {
         return
     fi
 
-    lnk="$name"
-    [[ "${lnk:0:1}" == '.' ]] && lnk="dot_${lnk#.}"
-    lnk="$rel_path/symlink_$lnk"
-
     if [[ "$bf" == symlink_* ]] || [[ "$bf" == encrypted_* ]] ||
        [[ "$bf" == *.tmpl ]] ||
        ([ -d "$f" ] &&
@@ -71,15 +88,50 @@ generate_link() {
         tgt="{{ .chezmoi.sourceDir }}/$rel"
     fi
 
-    tgt="${tgt//\/\//\/}"
-    path="${path//\/\//\/}"
-    echo "Linking $(chezmoi execute-template "$tgt") -> $path ($lnk)"
+    make_link "$tgt" "$name" "$path" "$rel_path"
+}
 
-    if [[ "$tgt" == *"{{"*"}}"* ]]; then
-        lnk="$lnk.tmpl"
+handle_autolinks() {
+    local dir=$1
+    local fullpkg=$2
+
+    local autolinks="$(cat "$dir/.ellipses-autolinks")"
+    local rel_autolinks_dir="$real_ellipses/$autolinks"
+    local abs_autolinks_dir="$HOME/$rel_autolinks_dir"
+    local czm_autolinks_dir="$(chezmoi source-path "$abs_autolinks_dir")"
+    local e_rel_path=$real_ellipses/$fullpkg/$subdir
+
+    if [ -z "$czm_autolinks_dir" ]; then
+        echo "Linkdir pointing to not-existent dir: $abs_autolinks_dir"
+        exit 1
     fi
 
-    echo "$tgt" > "$CHEZMOI/$lnk"
+    # Using relative path to config
+    # target_dir=$(realpath --relative-to="$autolinks_dir" "$el_path")
+
+    # for al in "$dir"/*; do
+    #     local rl=$(get_real_name "$al")
+    #     local t="$target_dir/$rl"
+    #     local l="$czm_autolinks_dir/symlink_$rl"
+
+    #     [ -z "$ELLIPSES_SILENT" ] && \
+    #         echo "Linking "$t" -> $l"
+
+    #     echo "$t" > "$l"
+    # done
+
+    target_dir=$(realpath --relative-to="$CHEZMOI" "$czm_autolinks_dir")
+
+    for al in "$dir"/*; do
+        if [[ "$al" == symlink_* ]]; then
+            continue
+        fi
+
+        local rl=$(get_real_name "$al")
+
+        tgt="{{ .chezmoi.homedir }}/$e_rel_path/$rl"
+        make_link "$tgt" "$rl" "$rel_autolinks_dir/$rl" "$target_dir"
+    done
 }
 
 visit_directory() {
@@ -99,11 +151,12 @@ visit_directory() {
         current_pkg="$bdir"
     fi
 
-    for f in $dir/*; do
+    for f in "$dir"/*; do
         if [ -L "$f" ]; then
             continue
         elif [ -d "$f" ]; then
-            subdir="$(get_real_name "$(b_basename "$f")")"
+            local current_dir=$f
+            subdir="$(get_real_name "$(b_basename "$current_dir")")"
 
             if [ -f "$current_dir/.ellipses-ignore" ] ||
                [ -f "$HOME/$real_ellipses/$fullpkg/$subdir/.ellipses-ignore" ]; then
@@ -116,14 +169,20 @@ visit_directory() {
                 fi
                 presubs=$allsubs
                 allsubs+="$subdir/"
-                visit_directory "$f"
+                predir=$current_dir
+
+                visit_directory "$current_dir"
+
                 allsubs=$presubs
+                current_dir=$predir
             else
-                echo "generate_link "$f" "$current_pkg" "$fullpkg""
-                generate_link "$f" "$current_pkg" "$fullpkg"
+                generate_link "$current_dir" "$current_pkg" "$fullpkg"
+            fi
+
+            if [ -f "$current_dir/.ellipses-autolinks" ]; then
+                handle_autolinks "$current_dir" "$fullpkg"
             fi
         else
-            echo "generate_link "$f" "$current_pkg" "$fullpkg""
             generate_link "$f" "$current_pkg" "$fullpkg"
         fi
     done

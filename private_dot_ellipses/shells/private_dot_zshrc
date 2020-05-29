@@ -1,0 +1,5 @@
+# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+[ -z "$ZSH_THEME" ] && ZSH_THEME="bira"
+
+[ -f "$HOME/.3v1rc" ] && source "$HOME/.3v1rc"
+

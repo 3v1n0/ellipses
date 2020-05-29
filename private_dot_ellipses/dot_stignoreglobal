@@ -12,4 +12,5 @@ weechat.log
 (?d)**.qcow2
 (?d)**.vdi
 (?d)**.snap
+(?d)**.zwc
 (?d)**~

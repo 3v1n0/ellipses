@@ -1,0 +1,3 @@
+ZDOTDIR=${XDG_CONFIG_HOME:-$HOME/.config}/zsh
+
+[ -f $ZDOTDIR/.zshenv-override ] && source $ZDOTDIR/.zshenv-override

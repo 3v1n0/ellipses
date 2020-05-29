@@ -264,13 +264,9 @@ def buffer_is_hidable(buffer):
         return False
 
     if weechat.config_get_plugin("hide_inactive") == "off":
-        return False
-    else:
         nicks_count = weechat.buffer_get_integer(buffer, 'nicklist_nicks_count')
-        if nicks_count > 0:
+        if nicks_count == 0:
             return False
-    # if hide_inactive and nicks_count > 0 or not hide_inactive:
-    #     return False
 
     for entry in list_exemptions():
         if entry in full_name:
@@ -282,8 +278,6 @@ def buffer_is_hidable(buffer):
 def maybe_hide_buffer(buffer):
     """Hide a buffer if all the conditions are met"""
     if buffer_is_hidable(buffer):
-        full_name = weechat.buffer_get_string(buffer, "full_name")
-        weechat.prnt("", "Buffer {} ({}) hidden".format (buffer, full_name))
         weechat.buffer_set(buffer, "hidden", "1")
 
 
@@ -384,28 +378,6 @@ def print_exemptions():
         weechat.prnt("", "[{}] list: No exemptions defined so far.".format(SCRIPT_COMMAND))
 
 
-def get_buffers():
-    ''' Get a list of all the buffers in weechat. '''
-    hdata  = weechat.hdata_get('buffer')
-    buffer = weechat.hdata_get_list(hdata, "gui_buffers");
-
-    result = []
-    while buffer:
-        result.append(buffer)
-        buffer = weechat.hdata_pointer(hdata, buffer, 'next_buffer')
-    return result
-
-
-def autohide_collector():
-    buffers = get_buffers()
-    weechat.prnt("", "Hiding buffers not matching rules...")
-    weechat.prnt("", "Buffers list {}".format (buffers))
-
-    for buffer in buffers:
-        # weechat.buffer_set(buffer, "hidden", "0")
-        maybe_hide_buffer(buffer)
-
-
 def command_cb(data, buffer, args):
     """Weechat callback for parsing and executing the given command.
 
@@ -413,11 +385,7 @@ def command_cb(data, buffer, args):
     """
     list_args = args.split(" ")
 
-    if not len(args):
-        weechat.prnt("", "TIME FOR USSSSSS")
-        autohide_collector()
-
-    elif list_args[0] not in ["add", "del", "list"]:
+    if list_args[0] not in ["add", "del", "list"]:
         weechat.prnt("", "[{0}] bad option while using /{0} command, try '/help {0}' for more info".format(
             SCRIPT_COMMAND))
 

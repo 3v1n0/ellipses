@@ -134,3 +134,10 @@ for i in "$CHEZMOI/$dotted_ellipses"/*; do
     allsubs=
     visit_directory "$i"
 done
+
+
+## Manual links
+echo "{{ .chezmoi.homedir }}/$real_ellipses/shells/.bash_history_{{ .chezmoi.hostname }}" \
+    > "$CHEZMOI/symlink_dot_bash_history.tmpl"
+echo "{{ .chezmoi.homedir }}/$real_ellipses/shells/.bash_history_eternal_{{ .chezmoi.hostname }}"\
+    > "$CHEZMOI/symlink_dot_bash_history_eternal.tmpl"

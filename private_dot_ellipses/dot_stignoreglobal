@@ -13,4 +13,5 @@ weechat.log
 (?d)**.vdi
 (?d)**.snap
 (?d)**.zwc
+(?d)**.zcompdump
 (?d)**~

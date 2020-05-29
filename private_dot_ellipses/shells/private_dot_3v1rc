@@ -1,0 +1,1009 @@
+export PATH=~/Dev/Script:~/Software/Script:~/Software/bin:~/.local/bin:$PATH
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+# [ -z "$PS1" ] && return
+[ -n "$SNAP" ] && [ "$HOME" != "/home/$USER" ] && return
+
+if [ -n "$ZSH_VERSION" ]; then
+  typeset -g MY_ZSH_CONFIG_PATH=${ZDOTDIR:-$HOME/.config/zsh}
+  typeset -g MY_ZINIT_PATH=$HOME/.zinit
+
+  if [ -f "$MY_ZINIT_PATH/bin/zmodules/Src/zdharma/zplugin.so" ]; then
+    module_path+=( "$MY_ZINIT_PATH/bin/zmodules/Src" )
+    zmodload zdharma/zplugin &> /dev/null
+  fi
+
+  # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+  # Initialization code that may require console input (password prompts, [y/n]
+  # confirmations, etc.) must go above this block; everything else may go below.
+  if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  fi
+fi
+
+# Set bash history size and update it on each "enter"
+if [ -n "$BASH_VERSION" ]; then
+  HISTFILE=$HOME/.bash_history_eternal
+  export HISTSIZE=
+elif [ -n "$ZSH_VERSION" ]; then
+  HISTFILE=$MY_ZSH_CONFIG_PATH/.zsh_history_eternal_$HOST
+  ZSH_MAX_HISTSIZE=999999999
+  HISTSIZE=$ZSH_MAX_HISTSIZE
+  SAVEHIST=$HISTSIZE
+fi
+
+HISTFILESIZE=
+HISTCONTROL=ignoredups:ignorespace:erasedups:ignoreboth
+HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
+HISTTIMEFORMAT="%F %T "
+
+# See more stuff at https://terminalsare.sexy/
+
+if [ -n "$BASH_VERSION" ] && [ -d "$HOME/.bash_it" ]; then
+  # Path to the bash it configuration
+  export BASH_IT="$HOME/.bash_it"
+
+  # Lock and Load a custom theme file.
+  # Leave empty to disable theming.
+  # location /.bash_it/themes/
+  # Another option is to use customized bira
+  # Look also at liquid-prompt https://github.com/nojhan/liquidprompt
+  # or https://github.com/riobard/bash-powerline
+  # or https://github.com/b-ryan/powerline-shell
+  export BASH_IT_THEME='nwinkler_random_colors'
+  # export BASH_IT_THEME='liquidprompt'
+  # export BASH_IT_THEME='bira'
+  export THEME_SHOW_BATTERY=false
+  # export THEME_SHOW_CLOCK=false
+  export THEME_SHOW_EXITCODE=true
+  # export ___ATOMIC_BOTTOM="char "
+  export THEME_SHOW_SUDO=true
+
+  if [ -n "$SCHROOT_ALIAS_NAME" ]; then
+    export NWLINKLER_RANDOM_COLOR_FILE="$HOME/.nwinkler_random_colors_$SCHROOT_ALIAS_NAME"
+  fi
+
+  # (Advanced): Change this to the name of your remote repo if you
+  # cloned bash-it with a remote other than origin such as `bash-it`.
+  # export BASH_IT_REMOTE='bash-it'
+
+  # Your place for hosting Git repos. I use this for private repos.
+  # export GIT_HOSTING='git@git.domain.com'
+
+  # Don't check mail when opening terminal.
+  unset MAILCHECK
+
+  # Change this to your console based IRC client of choice.
+  export IRC_CLIENT='weechat'
+
+  # Set this to the command you use for todo.txt-cli
+  #export TODO="t"
+
+  # Set this to false to turn off version control status checking within the prompt for all themes
+  export SCM_CHECK=true
+  export SCM_GIT_SHOW_DETAILS=false
+
+  # Set Xterm/screen/Tmux title with only a short hostname.
+  # Uncomment this (or set SHORT_HOSTNAME to something else),
+  # Will otherwise fall back on $HOSTNAME.
+  #export SHORT_HOSTNAME=$(hostname -s)
+
+  # Set Xterm/screen/Tmux title with only a short username.
+  # Uncomment this (or set SHORT_USER to something else),
+  # Will otherwise fall back on $USER.
+  #export SHORT_USER=${USER:0:8}
+
+  # Set Xterm/screen/Tmux title with shortened command and directory.
+  # Uncomment this to set.
+  #export SHORT_TERM_LINE=true
+
+  # Set vcprompt executable path for scm advance info in prompt (demula theme)
+  # https://github.com/djl/vcprompt
+  #export VCPROMPT_EXECUTABLE=~/.vcprompt/bin/vcprompt
+
+  # (Advanced): Uncomment this to make Bash-it reload itself automatically
+  # after enabling or disabling aliases, plugins, and completions.
+  # export BASH_IT_AUTOMATIC_RELOAD_AFTER_CONFIG_CHANGE=1
+
+  # Uncomment this to make Bash-it create alias reload.
+  # export BASH_IT_RELOAD_LEGACY=1
+
+  export BASH_IT_CCAT_STYLE="monokai"
+  export BASH_IT_CLESS_STYLE="monokai"
+
+  # Load Bash It
+  source "$BASH_IT"/bash_it.sh
+fi
+
+# Features imported from bash-sensible:
+# https://github.com/mrzool/bash-sensible/blob/master/sensible.bash
+if [ -n "$BASH_VERSION" ] && ((BASH_VERSINFO[0] >= 4)); then
+  # Update window size after every command
+  shopt -s checkwinsize
+
+  # Automatically trim long paths in the prompt (requires Bash 4.x)
+  PROMPT_DIRTRIM=5
+
+  # Enable history expansion with space
+  # E.g. typing !!<space> will replace the !! with your last command
+  bind Space:magic-space
+  # bind Tab:magic-space
+
+  # Turn on recursive globbing (enables ** to recurse all directories)
+  #shopt -s globstar 2> /dev/null
+
+  # Case-insensitive globbing (used in pathname expansion)
+  # shopt -s nocaseglob;
+
+  ## SMARTER TAB-COMPLETION (Readline bindings) ##
+
+  # Perform file completion in a case insensitive fashion
+  bind "set completion-ignore-case on"
+
+  # Treat hyphens and underscores as equivalent
+  bind "set completion-map-case on"
+
+  # Display matches for ambiguous patterns at first tab press
+  #bind "set show-all-if-ambiguous on"
+
+  # Immediately add a trailing slash when autocompleting symlinks to directories
+  bind "set mark-symlinked-directories on"
+
+  ## SANE HISTORY DEFAULTS ##
+
+  # Append to the history file, don't overwrite it
+  shopt -s histappend
+
+  # Save multi-line commands as one command
+  shopt -s cmdhist
+
+  # Use standard ISO 8601 timestamp
+  # %F equivalent to %Y-%m-%d
+  # %T equivalent to %H:%M:%S (24-hours format)
+  HISTTIMEFORMAT='%F %T '
+
+  # Prepend cd to directory names automatically
+  shopt -s autocd 2> /dev/null
+  # Correct spelling errors during tab-completion
+  shopt -s dirspell 2> /dev/null
+  # Correct spelling errors in arguments supplied to cd
+  shopt -s cdspell 2> /dev/null
+
+  # This defines where cd looks for targets
+  # Add the directories you want to have fast access to, separated by colon
+  # Ex: CDPATH=".:~:~/projects" will look for targets in the current working directory, in home and in the ~/projects folder
+  CDPATH="."
+
+  # This allows you to bookmark your favorite places across the file system
+  # Define a variable containing a path and you will be able to cd into it regardless of the directory you're in
+  shopt -s cdable_vars
+
+  # Examples:
+  # export dotfiles="$HOME/dotfiles"
+fi
+
+if [ -n "$BASH_VERSION" ] && [ -z "$BASH_IT" ] && ! [[ $PROMPT_COMMAND == *"history -a;"* ]]; then
+  #export PROMPT_COMMAND="history -a; history -r; $PROMPT_COMMAND"
+  PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+fi
+
+if [ -n "$BASH_VERSION" ] && [ -z "$BASH_IT" ]; then
+  # Check http://bashrcgenerator.com/
+  USER_COLOR="38;5;147m"
+  AT_COLOR="38;5;192m"
+  HOST_COLOR=92m
+  PATH_COLOR="38;5;230m"
+
+  if [ -z "$SCHROOT_ALIAS_NAME" ]; then
+    if [ $HOSTNAME = "tricky" ]; then
+      USER_COLOR="34m"
+      AT_COLOR="38;5;208m"
+      HOST_COLOR="93m"
+      PATH_COLOR="38;5;192m"
+    elif [ $HOSTNAME = "t460s" ]; then
+      USER_COLOR="38;5;111m"
+      AT_COLOR="38;5;113m"
+      HOST_COLOR="38;5;172m"
+    elif [ $HOSTNAME = "ubuntu-vmware" ]; then
+      HOST_COLOR="38;5;214m"
+    fi
+  elif [ "$SCHROOT_ALIAS_NAME" == "unstable" ]; then
+    HOST_COLOR="31m"
+  fi
+
+  BASE_PS1="\[$(tput bold)\]\[\033[$USER_COLOR\]\u\[$(tput bold)\]\[\033[$AT_COLOR\]@\[$(tput bold)\]\[\033[$HOST_COLOR\]__HOSTNAME__\[$(tput bold)\]\[\033[33m\]:\[$(tput bold)\]\[\033[$PATH_COLOR\]\w\[$(tput sgr0)\]\[\033[38;5;15m\]\[\033[32m\]__VCS_BRANCH__\[\033[00m\]:__MARK__ \[$(tput sgr0)\]\\$ \[$(tput sgr0)\]"
+fi
+
+parse_git_branch() {
+ #git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+  git branch 2> /dev/null | sed -n '/\* /s///p'
+}
+
+parse_bzr_branch() {
+  [ -d .bzr ] || exit 1
+  bzr info 2> /dev/null | sed -n "s,\s*checkout of branch:.*/\(.\+\),\1,p"
+}
+
+parse_jhbuild() {
+  b="$1"
+  if [ -n "$b" ]; then branch=", $b"; fi
+  [ -n "$UNDER_JHBUILD" ] && echo "jhbuild: ${JHBUILD_PREFIX}${branch}" || echo "$b"
+}
+
+parse_vcs_branch() {
+  [ -n "$DISABLE_VCS_BRANCH" ] && exit
+  branch="$(parse_bzr_branch)"
+  [ -z "$branch" ] && branch="$(parse_git_branch)"
+  branch="$(parse_jhbuild "$branch")"
+  [ -n "$branch" ] && [ "${branch:0:1}" == "(" ] && [ "${branch: -1}" == ")" ] && branch="${branch:1:-1}"
+  [ -n "$branch" ] && echo " ($branch)"
+}
+
+_3v1_set_prompt() {
+  last_cmd=$?
+  Blue='\[\e[01;34m\]'
+  White='\[\e[01;37m\]'
+  Red='\[\e[01;31m\]'
+  Green='\[\e[01;32m\]'
+  Reset='\[\e[00m\]'
+  FancyX='\342\234\227'
+  Checkmark='\342\234\223'
+
+  if [[ $last_cmd == 0 ]]; then
+    mark=${Green}${Checkmark}
+  else
+    mark=${Red}${FancyX}
+  fi
+
+  if [ -n "$SCHROOT_ALIAS_NAME" ]; then
+    HOSTNAME="$SCHROOT_ALIAS_NAME"
+  fi
+
+  #source /etc/profile.d/vte.sh
+  #VTE_PWD_THING="$(__vte_osc7)"
+
+  PS1="${BASE_PS1/__MARK__/$mark}"
+  PS1="${PS1/__HOSTNAME__/$HOSTNAME}"
+  PS1="${PS1/__VCS_BRANCH__/$(parse_vcs_branch)}"
+  PS1="$PS1$VTE_PWD_THING"
+  readable_pwd="${PWD/#$HOME/\~}"
+  terminal_title="$readable_pwd"
+
+  if [ "$PWD" == "$HOME" ]; then
+    if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] || [ -n "$SCHROOT_ALIAS_NAME" ]; then
+      terminal_title="$HOSTNAME: ~"
+      if [ "$USER" != "marco" ]; then
+        terminal_title="$USER@$terminal_title"
+      fi
+    else
+      terminal_title="$USER: ~"
+    fi
+  else
+    if [ "$(expr length ${readable_pwd//[^\/]})" -gt 2 ]; then
+      terminal_title="$(basename "$(dirname "$PWD")")/$(basename "$PWD")"
+    fi
+
+    if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+      terminal_title="$HOSTNAME: $terminal_title"
+      if [ "$USER" != "marco" ]; then
+        terminal_title="$USER@$terminal_title"
+      fi
+    elif [ "$USER" != "marco" ]; then
+      terminal_title="$USER: $terminal_title"
+    fi
+  fi
+
+  echo -ne "\033]0;$terminal_title\007"
+}
+
+if [ -n "$BASH_VERSION" ] && [ -z "$BASH_IT" ] &&
+   ! [[ $PROMPT_COMMAND == *"_3v1_set_prompt;"* ]] &&
+   type -t _3v1_set_prompt &> /dev/null; then
+  PROMPT_COMMAND="_3v1_set_prompt; $PROMPT_COMMAND"
+fi
+
+if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]]; then
+  if [ ! -f $MY_ZINIT_PATH/bin/zinit.zsh ] && ((${+commands[git]})); then
+    __zinit_just_installed=1
+    mkdir -p $MY_ZINIT_PATH && chmod g-rwX "$MY_ZINIT_PATH" && \
+      git clone --depth=1 https://github.com/zdharma/zinit.git $MY_ZINIT_PATH/bin
+  fi
+
+  if [ -f $MY_ZINIT_PATH/bin/zinit.zsh ]; then
+    declare -A ZINIT
+    typeset -g ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/.zcompdump-${HOST/.*/}-${ZSH_VERSION}"
+
+    ZINIT[HOME_DIR]="$MY_ZINIT_PATH"
+    ZINIT[ZCOMPDUMP_PATH]="$ZSH_COMPDUMP"
+
+    source $MY_ZINIT_PATH/bin/zinit.zsh
+
+    if [ -z "$skip_global_compinit" ]; then
+      autoload -Uz _zinit
+      (( ${+_comps} )) && _comps[zinit]=_zinit
+    fi
+
+    [ -n "$__zinit_just_installed" ] && zinit self-update
+
+    unset MY_ZINIT_PATH # Use ZINIT[HOME_DIR] from now on
+
+    [ ${${(s:.:)ZSH_VERSION}[1]} -gt 5 ] && [ ${${(s:.:)ZSH_VERSION}[2]} -gt 2 ] && \
+      MY_ZINIT_USE_TURBO=true
+
+    my_zinit_modules_build() {
+# atclone="zinit module build && zmodload -u fooo &> /dev/null; zmodload zdharma/zplugin" \
+      # zinit wait atclone='echo Cloned in $PWD' atpull="%atclone"
+      # zinit wait is-snippet atclone='echo cloned!' for "$ZINIT[BIN_DIR]/zmodules"
+      return
+    }
+
+    if [ -n "$ZINIT_MODULE_AUTO_BUILD" ]; then
+      my_zinit_modules_build
+    elif [ -z "$ZINIT_MODULE_BULD_WARNING_MUTE" ] && \
+      ! (( ${${(@f)"$(zmodload)"}[(I)zdharma/zplugin]} )); then
+      echo "Use `zinit module build` to build the zinit module"
+    fi
+  fi
+fi
+
+__my_default_zsh_settings() {
+  alias list_zsh_completions='for command completion in ${(kv)_comps}; do printf "%-32s %s\n" $command $completion; done | sort'
+
+  setopt hist_ignore_space
+  HISTSIZE=$ZSH_MAX_HISTSIZE
+  SAVEHIST=$HISTSIZE
+  HIST_STAMPS="dd/mm/yyyy"
+  # export HISTFILE="/tmp/zsh_history"
+  # unsetopt extendedhistory
+
+  # Don't show "want to see all completions and split them by group name"
+  zstyle ':completion:*' list-prompt   ''
+  zstyle ':completion:*' select-prompt ''
+  zstyle ':completion:*' format '%F{yellow}%d:%f'
+  zstyle ':completion:*' group-name ''
+
+  # allow the use of the Home/End keys
+  bindkey "\e[1~" beginning-of-line
+  bindkey "\e[4~" end-of-line
+
+  # allow the use of the Delete/Insert keys
+  bindkey "\e[3~" delete-char
+  bindkey "\e[2~" quoted-insert
+
+  # Ctrl-Delete: delete next word
+  bindkey "\e[3;5~" kill-word
+
+  # Ctrl Backspace
+  bindkey "\C-h" backward-kill-word
+
+  # mappings for "page up" and "page down" to step to the beginning/end
+  # of the history
+  #bindkey "\e[5~" beginning-of-history
+  #bindkey "\e[6~" end-of-history
+
+  # alternate mappings for "page up" and "page down" to search the history
+  if (typeset -f history-substring-search-up &> /dev/null); then
+    bindkey "\e[5~" history-substring-search-up
+    bindkey "\e[6~" history-substring-search-down
+  else
+    bindkey "\e[5~" history-search-backward
+    bindkey "\e[6~" history-search-forward
+  fi
+
+  # mappings for Ctrl-left-arrow and Ctrl-right-arrow for word moving
+  bindkey "\e[1;5C" forward-word
+  bindkey "\e[1;5D" backward-word
+  bindkey "\e[5C" forward-word
+  bindkey "\e[5D" backward-word
+  bindkey "\e\e[C" forward-word
+  bindkey "\e\e[D" backward-word
+
+  # mappings for Ctrl+jkhl
+  #bindkey "\C-h" backward-char
+  #bindkey "\C-l" forward-char
+  #bindkey "\C-k" history-search-backward
+  #bindkey "\C-j" history-search-forward
+
+  # mappings for Alt+[shif]+jkhl
+  bindkey "\eh" backward-char
+  bindkey "\el" forward-char
+  bindkey "\eH" backward-word
+  bindkey "\eL" forward-word
+  bindkey "\eb" backward-word
+  bindkey "\ew" forward-word
+  bindkey "\ee" forward-word
+  if (typeset -f history-substring-search-up &> /dev/null); then
+    bindkey "\ek" history-substring-search-up
+    bindkey "\ej" history-substring-search-down
+  else
+    bindkey "\ek" history-search-backward
+    bindkey "\ej" history-search-forward
+  fi
+
+  # Define undo properly
+  # bindkey '^_' undo
+}
+
+__my_plugins_preload_setup() {
+  # OMZ: case-sensitive completion.
+  CASE_SENSITIVE="true"
+
+  # OMZ: hyphen-insensitive completion.
+  HYPHEN_INSENSITIVE="true"
+
+  # enable command auto-correction.
+  # ENABLE_CORRECTION="true"
+
+  # Ignore ZSH git integration
+  DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+  # display red dots whilst waiting for completion.
+  # COMPLETION_WAITING_DOTS="true"
+
+  ZSH_AUTOSUGGEST_USE_ASYNC=true
+  # ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_DISABLE=true
+  # ZSH_BASH_COMPLETIONS_FALLBACK_PRELOAD_ALL=true
+  # ZSH_BASH_COMPLETIONS_FALLBACK_REPLACE_LIST=(git)
+  # ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_AUTO_UPDATE=true
+  ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+
+  # Try using
+  # https://github.com/zdharma/fast-syntax-highlighting
+  _my_zsh_custom_plugins=(
+    zsh-users/zsh-autosuggestions
+    zsh-users/zsh-completions
+    3v1n0/zsh-bash-completions-fallback
+    zsh-users/zsh-syntax-highlighting
+    zsh-users/zsh-history-substring-search
+  )
+
+  # TODO: disable some plugins as zsh-users/zsh-autosuggestions when running on ttys
+  # case $TTY in
+  #   (/dev/tty[1-9])
+  #     ;;
+  #   (*)
+  #     ;;
+  # esac
+
+  _my_omz_plugins=(
+    git
+  )
+
+  if [ -z "$FZF_BASE" ]; then
+    # ADD THE SAME FOR NVIM pager!
+    [[ -v ZINIT[HOME_DIR] ]] && zinit pack for fzf
+
+    if [ -d "${ZINIT[PLUGINS_DIR]}/fzf" ]; then
+      FZF_BASE="${ZINIT[PLUGINS_DIR]}/fzf"
+    elif [ -d "$HOME/Software/fzf" ]; then
+      FZF_BASE="$HOME/Software/fzf"
+    fi
+
+    if [ -n "$FZF_BASE" ]; then
+      _my_omz_plugins+=(fzf)
+    else
+      _my_zsh_custom_plugins+=(zdharma/history-search-multi-word)
+    fi
+  fi
+}
+
+__my_theme_preload_setup() {
+  P10K_THEME=p10k-pure
+  P10K_THEME_PATH="$MY_ZSH_CONFIG_PATH/p10k-themes/$P10K_THEME.zsh"
+  POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
+
+  [ -n "$P10K_THEME" ] && \
+    _my_zsh_custom_plugins+=(romkatv/powerlevel10k)
+
+  if [[ -v ZINIT[HOME_DIR] ]]; then
+    unset ZSH_THEME
+
+    # ADD NON-TURBO-MODE!
+    if [ -z "$MY_ZINIT_DISABLE_P10K" ]; then
+      [ -n "$MY_ZINIT_USE_TURBO" ] && local $wait=wait
+      zinit $wait atload='!__my_theme_loaded_callback' lucid nocd \
+        for romkatv/powerlevel10k
+      return
+    fi
+  fi
+
+  # Set name of the theme to load --- if set to "random", it will
+  # load a random theme each time oh-my-zsh is loaded, in which case,
+  # to know which specific one was loaded, run: echo $RANDOM_THEME
+  # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+
+  if [ -n "$P10K_THEME" ]; then
+    ZSH_THEME="powerlevel10k/powerlevel10k"
+  else
+    # ZSH_THEME="blinks"
+    # ZSH_THEME="duellj"
+    return
+  fi
+}
+
+__my_theme_loaded_callback() {
+  if [ -z "$P10K_THEME" ] || ! [[ -f "$P10K_THEME_PATH" ]]; then
+    return
+  fi
+
+  if ! [[ -v ZINIT[HOME_DIR] ]] &&
+     [[ "$ZSH_THEME" != "powerlevel10k/powerlevel10k" ]]; then
+    return
+  fi
+
+  source $P10K_THEME_PATH
+
+  if [[ "$P10K_THEME" == "p10k-colorful" ]]; then
+    typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=33
+    typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=36
+    typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=33
+    typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=36
+    typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=8
+    typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=2
+
+    if [ -n "$SCHROOT_ALIAS_NAME" ]; then
+      typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%n@$SCHROOT_ALIAS_NAME"
+    fi
+
+    if [[ "$SCHROOT_ALIAS_NAME" == "unstable" ]]; then
+      typeset -g POWERLEVEL9K_DIR_BACKGROUND=25
+      typeset -g POWERLEVEL9K_CONTEXT_BACKGROUND=124
+    elif [[ "$HOST" == "tricky" ]]; then
+      typeset -g POWERLEVEL9K_DIR_BACKGROUND=202
+    fi
+  fi
+}
+
+__my_plugins_loaded_callback() {
+  if [[ -v ZINIT[HOME_DIR] ]]; then
+    if [[ -n "$(eval 'echo ${ZSH_COMPDUMP}(N.mh+24)')" ]]; then
+      zicompinit
+    else
+      zicompinit -C
+    fi;
+
+    zicdreplay
+  fi
+
+  # Check for __fzfcmd set in history instead
+  if ((${_my_omz_plugins[(I)fzf]})); then
+    fzf-history-widget-custom() {
+      local selected num
+      setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
+      selected=( $(fc -rl 1 | perl -ne 'print if !$seen{(/^\s*[0-9]+\s+(.*)/, $1)}++' |
+        FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=index --bind=ctrl-r:up --expect=tab $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)) )
+      local ret=$?
+      if [ -n "$selected" ]; then
+        local select=0
+        if [[ $selected[1] == tab ]]; then
+          select=1
+          shift selected
+        fi
+        num=$selected[1]
+        if [ -n "$num" ]; then
+          zle vi-fetch-history -n $num
+          [[ $select == 0 ]] && zle accept-line
+        fi
+      fi
+      zle reset-prompt
+      return $ret
+    }
+
+    zle -N   fzf-history-widget-custom
+    bindkey '^R' fzf-history-widget-custom
+
+    # give a preview of commandline arguments when completing `kill`
+    # Based on https://github.com/Aloxaf/fzf-tab
+    zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
+    zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
+  fi
+
+  if [ -n "$ZSH_AUTOSUGGEST_ACCEPT_WIDGETS" ]; then
+    ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=("${ZSH_AUTOSUGGEST_ACCEPT_WIDGETS[@]/forward-char}")
+    ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS+=forward-char
+
+    # This speeds up pasting w/ autosuggest
+    # https://github.com/zsh-users/zsh-autosuggestions/issues/238
+    pasteinit() {
+      OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+      zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+    }
+
+    pastefinish() {
+      zle -N self-insert $OLD_SELF_INSERT
+    }
+    zstyle :bracketed-paste-magic paste-init pasteinit
+    zstyle :bracketed-paste-magic paste-finish pastefinish
+  fi
+
+  [ -n "$MY_ZINIT_USE_TURBO" ] && \
+    export_dev_paths
+
+  __my_default_zsh_settings
+}
+
+__my_zsh_plugins_load() {
+  if [ -z "$ZSH" ]; then
+    __my_default_zsh_settings
+    return
+  fi
+
+  if [[ -v ZINIT[HOME_DIR] ]]; then
+    if [ -n "$MY_ZINIT_USE_TURBO" ]; then
+      for p in $_my_omz_plugins; do
+        zinit wait is-snippet
+        zinit snippet $ZSH/plugins/$p/$p.plugin.zsh
+      done
+
+      zinit wait depth=1 for ${_my_zsh_custom_plugins[@]:0:-1}
+      zinit wait depth=1 nocd atload='__my_plugins_loaded_callback' \
+        for ${_my_zsh_custom_plugins[-1]}
+    else
+      zinit depth=1 light-mode for ${_my_zsh_custom_plugins[@]}
+
+      for p in $_my_omz_plugins; do
+        zinit snippet $ZSH/plugins/$p/$p.plugin.zsh
+      done
+
+      __my_plugins_loaded_callback
+    fi
+  else
+    # TODO support cloning and loading _my_zsh_custom_plugins
+    plugins=_my_omz_plugins source $ZSH/oh-my-zsh.sh
+    __my_plugins_loaded_callback
+    __my_theme_loaded_callback
+  fi
+}
+
+if [ -n "$ZSH_VERSION" ]; then
+    __my_plugins_preload_setup
+    __my_theme_preload_setup
+
+  if [[ -v ZINIT[BIN_DIR] ]]; then
+    typeset -g DISABLE_AUTO_UPDATE=true
+    typeset -a plugins=()
+    compinit() {
+      return
+    }
+
+    __my_zinit_after_omz_load() {
+      unfunction compinit
+      __my_zsh_plugins_load
+    }
+
+    if [ -n "$MY_ZINIT_USE_TURBO" ]; then
+      zinit wait depth=1 nocompletions \
+        atinit='ZSH=$PWD' \
+        atload='__my_zinit_after_omz_load' \
+          for ohmyzsh/ohmyzsh
+    else
+      zinit ice depth=1 nocompletions atinit'ZSH=$PWD;'
+      zinit light ohmyzsh/ohmyzsh
+      __my_zinit_after_omz_load
+    fi
+  elif [ -n "$ZSH" ] && [ -d "$ZSH" ]; then
+    __my_zsh_plugins_load
+  else
+    unset ZSH
+  fi
+fi
+
+#trap 'echo -ne "\033]0;$BASH_COMMAND\007"' DEBUG
+
+# Multithread compilation
+export CPUs=$(grep -w -c processor /proc/cpuinfo)
+export CONCURRENCY_LEVEL=$((CPUs+CPUs/4))
+export MAKEFLAGS="-j$CONCURRENCY_LEVEL"
+
+# Set my default GPG key
+#export GPGKEY=45B1103FB93ACBD90296DBCAE83D089481836EBF
+#export GPGKEY=141BD06048FA8702E905D52C2D027D27312C28F4
+export GPGKEY=D4C501DA48EB797A081750939449C2F50996635F
+
+# Set my debian data
+#export DEBEMAIL="Marco Trevisan <mail@3v1n0.net>"
+#export DISPLAY=:0
+#export DEBEMAIL="trevi55@gmail.com"
+#export DEBEMAIL="mail@3v1n0.net"
+export DEBEMAIL="marco@ubuntu.com"
+export DEBFULLNAME="Marco Trevisan (Treviño)"
+export DEB_SIGN_KEYID=$GPGKEY
+export DEB_BUILD_OPTIONS="parallel=$CONCURRENCY_LEVEL"
+
+# Set git data
+export GIT_AUTHOR_NAME="Marco Trevisan (Treviño)"
+export GIT_AUTHOR_EMAIL="mail@3v1n0.net"
+export GIT_PAGER="$(command -v tig &>/dev/null && echo "sed 's/\x1b\[[0-9;]*m//g' | tig" || echo /usr/bin/less)"
+
+# More global env
+export EDITOR="$(command -v nvim || command -v vim || command -v ne || command -v nano)"
+export VISUAL_EDITOR="$(command -v code || command -v subl || command -v nvim || command -v vim)"
+export SUDO_EDITOR=$EDITOR
+
+[[ "$VISUAL_EDITOR" == *"code" ]] && VISUAL=+" --wait"
+# export VISUAL=$VISUAL_EDITOR -- disable this or will always be the ugly GUI!
+
+my_editor_cmd=$([ -n "$ZSH_VERSION" ] && echo ${EDITOR:t} || basename $EDITOR)
+alias nano=$my_editor_cmd
+
+if [ -n "$ZSH_VERSION" ]; then
+  alias -s md=$EDITOR
+  alias -s json=$EDITOR
+  alias -s {ts,js}=$VISUAL_EDITOR
+fi
+
+#Basic settings
+export XDG_DATA_DIRS=/usr/share:$XDG_DATA_DIRS
+export XDG_CONFIG_DIRS="/etc:$XDG_CONFIG_DIRS"
+
+# Java settings
+#export JAVA_HOME="/usr/lib/jvm/java-6-openjdk/jre"
+export _JAVA_OPTIONS="-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
+
+# Use CCACHE
+#PATH=/usr/lib/ccache:$PATH
+#export CCACHE_SLOPPINESS=time_macros
+
+# VAAPI vdpau support
+#export VDPAU_DRIVER=r600
+#export LIBVA_DRIVER_NAME=vdpau
+
+# Mozilla acceleration force
+#export MOZ_USE_OMTC=1
+if (command -v xinput &> /dev/null && xinput list | grep -q "Touch Controller"); then
+  export MOZ_USE_XINPUT2=1
+fi
+
+function eval_cmd() { eval $($*); }
+
+prefix_builder_script="$HOME/Dev/Script/prefix-builder.sh"
+prefix_builder="bash $prefix_builder_script"
+alias build-prefix="eval_cmd $prefix_builder"
+alias append-build-prefix="eval_cmd $prefix_builder append"
+alias prepend-build-prefix="eval_cmd $prefix_builder prepend"
+alias rm-build-prefix="eval_cmd $prefix_builder rm"
+alias add-build-prefix="prepend-build-prefix"
+
+# Development
+export DEV_PREFIX="/opt/dev"
+[ ! -d "$DEV_PREFIX" ] && unset DEV_PREFIX
+
+export_dev_paths() {
+  if [ -e "$prefix_builder_script" ]; then
+    # Enlightenment
+    # export E_PREFIX="/opt/e"
+    # add-build-prefix $E_PREFIX
+
+    [[ ":$PATH:" != *":$DEV_PREFIX"* ]] && add-build-prefix $DEV_PREFIX
+  fi
+}
+
+[ -z "$ZSH_VERSION" ] || [ -z "$MY_ZINIT_USE_TURBO"] &&
+  export_dev_paths
+
+# Replace cd with pushd https://gist.github.com/mbadran/130469
+push_cd() {
+  # typing just `push_cd` will take you $HOME ;)
+  if [ -z "$1" ]; then
+    push_cd "$HOME"
+
+  # use `push_cd -` to visit previous directory
+  elif [[ "$1" == "-" ]]; then
+    if [ "$(dirs -p | wc -l)" -gt 1 ]; then
+      current_dir="$PWD"
+      popd > /dev/null
+      pushd -n "$current_dir" > /dev/null
+    elif [ -n "$OLDPWD" ]; then
+      push_cd "$OLDPWD"
+    fi
+
+  # use `push_cd -l` or `push_cd -s` to print current stack of folders
+  elif [[ "$1" == "-l" ]] || [[ "$1" == "-s" ]]; then
+    dirs -v
+
+  # use `push_cd -l N` to go to the Nth directory in history (pushing)
+  elif [[ "$1" == "-g" ]] && [[ "$2" =~ ^[0-9]+$ ]]; then
+    indexed_path=$(dirs -p | sed -n $(($2+1))p)
+    push_cd $(eval echo $indexed_path)
+
+  # use `push_cd +N` to go to the Nth directory in history (pushing)
+  elif [[ "$1" =~ ^[+][0-9]+$ ]]; then
+    push_cd -g ${1/+/}
+
+  # use `push_cd -N` to go n directories back in history
+  elif [[ "$1" =~ ^-[0-9]+$ ]]; then
+    for i in `seq 1 ${1/-/}`; do
+      popd > /dev/null
+    done
+
+  # use `push_cd -- <path>` if your path begins with a dash
+  elif [[ "$1" == "--" ]]; then
+    shift
+    pushd -- "$@" > /dev/null
+
+    # basic case: move to a dir and add it to history
+  else
+    pushd "$@" > /dev/null
+
+    if [[ "$1" == "." ]] || [[ "$1" == "$PWD" ]]; then
+      popd -n > /dev/null
+    fi
+  fi
+
+  if [ -n "$CD_SHOW_STACK" ]; then
+    dirs -v
+  fi
+}
+
+if [ -n "$BASH_VERSION" ]; then
+  # replace standard `cd` with enhanced version, ensure tab-completion works
+  alias cd=push_cd
+  complete -d cd
+elif [ -n "$ZSH_VERSION" ]; then
+  (( ${+aliases[cd]} )) && unalias cd
+  (( ${+functions[cd]} )) && unfunction cd
+  __cd() {
+    # Lazy loading of custom cd definition
+    unfunction "$0"
+    unalias cd
+
+    setopt auto_pushd
+    setopt pushd_ignore_dups
+    unsetopt pushdminus
+    setopt pushdsilent
+
+    _cd_alias() {
+      if [[ "$1" =~ ^-[a-z]+$ ]]; then
+        push_cd $@
+        return
+      fi
+
+      builtin cd $@
+    }
+
+    if ! (( ${+functions[compdef]} )); then
+      autoload -Uz compinit && compinit -d ${ZSH_COMPDUMP}
+    fi
+
+    compdef _dirs _cd_alias
+    alias cd=_cd_alias
+    _cd_alias $@
+  }
+
+  alias cd=__cd
+fi
+
+#transfer.sh
+transfer.sh() { if [ $# -eq 0 ]; then echo "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md"; return 1; fi
+tmpfile=$( mktemp -t transferXXX ); if tty -s; then basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g'); curl --progress-bar --upload-file "$1" "https://transfer.sh/$basefile" >> $tmpfile; echo >> $tmpfile; else curl --progress-bar --upload-file "-" "https://transfer.sh/$1" >> $tmpfile ; fi; cat $tmpfile; echo; rm -f $tmpfile; }; alias transfer=transfer
+
+# Unity
+export UNITY_DEV="$HOME/Dev/unity"
+export UNITY8_DEV="$HOME/Dev/U8"
+
+# Set pager
+export LESS_BIN=$(command -v /usr/bin/less)
+if [ -x ~/.vim/nvimpager/DIST/bin/nvimpager ]; then
+  export PAGER=~/.vim/nvimpager/DIST/bin/nvimpager
+else
+  export PAGER=less
+  #Less settings (colors)
+  #export LESS='--RAW-CONTROL-CHARS --tabs=8 -r -f -i' #-I ?
+  #export LESSOPEN='| /usr/bin/lesspipe %s'
+  #export LESSCLOSE='/usr/bin/lesspipe %s %s'
+
+  #Less man pages
+  export LESS_TERMCAP_mb=$'\E[01;31m'
+  export LESS_TERMCAP_md=$'\E[01;31m'
+  export LESS_TERMCAP_me=$'\E[0m'
+  export LESS_TERMCAP_se=$'\E[0m'
+  export LESS_TERMCAP_so=$'\E[01;44;33m'
+  export LESS_TERMCAP_ue=$'\E[0m'
+  export LESS_TERMCAP_us=$'\E[01;32m'
+fi
+
+# Less colors
+if [[ "$PAGER" == "less" ]] && [ -x /usr/share/source-highlight/src-hilite-lesspipe.sh ]; then
+  lesscolors()
+  {
+    env LESSOPEN='| /usr/share/source-highlight/src-hilite-lesspipe.sh %s' \
+        LESS=' --RAW-CONTROL-CHARS ' \
+        $(command -v less) "$@"
+  }
+
+  less()
+  {
+    less=$(command -v less)
+    has_file=false
+    all_text=true
+
+    # FIXME: args with space
+    for arg in $@; do
+      echo "Arg is $arg"
+      if [[ "$arg" != -* ]] && [ -e "$arg" ]; then
+        has_file=true
+        enc=$(file -b --mime-encoding "$(realpath $arg)")
+
+        if [[ "$enc" != *"-ascii" ]] && [ "$enc" != "utf-8" ]; then
+          all_text=false
+          break
+        fi
+      fi
+    done
+
+    if [ $has_file == true ] && [ "$all_text" == true ]; then
+      less=lesscolors
+    fi
+
+    $less "$@"
+  }
+fi
+
+function svndiff() { svn diff $@ | colordiff | less; }
+function cvsdiff() { cvs diff $@ | colordiff | less; }
+function extract_env() { tr '\000' '\012' < /proc/$(pidof $1|head -n1)/environ | grep $2; }
+function prepend_timestamp() { awk '{ print strftime("%Y-%m-%d %H:%M:%S"), $0; fflush(); }'; }
+function prepend_timestamp_ms() { while read line; do d=`date +%H:%M:%S.%N`; echo $d $line; done; }
+
+# NodeJS stuff
+if command -v npm &> /dev/null || command -v node &> /dev/null; then
+  declare -a __node_commands=('nvm' 'node' 'npm' 'yarn', 'eslint')
+  function __init_nvm() {
+    for i in "${__node_commands[@]}"; do unalias $i; done
+    unset __node_commands
+    unset -f __init_nvm
+
+    node_prefix=$(npm config get prefix)
+    export NODE_PATH="$NODE_PATH:$node_prefix/lib/node_modules"
+    export PATH="$node_prefix/bin:$PATH"
+  }
+  for i in "${__node_commands[@]}"; do alias $i='__init_nvm && '$i; done
+fi
+
+#if command -v hstr &> /dev/null; then
+#  alias hh=hstr                    # hh to be alias for hstr
+#  export HSTR_CONFIG=hicolor,prompt-bottom
+#  shopt -s histappend              # append new history items to .bash_history
+#  # if this is interactive shell, then bind hstr to Ctrl-r (for Vi mode check doc)
+#  if [[ $- =~ .*i.* ]]; then bind '"\C-r": "\C-a hstr -- \C-j"'; fi
+#  # if this is interactive shell, then bind 'kill last command' to Ctrl-x k
+#  if [[ $- =~ .*i.* ]]; then bind '"\C-xk": "\C-a hstr -k \C-j"'; fi
+#fi
+
+if [ -n "$BASH_VERSION" ] && [ -f ~/.fzf.bash ]; then
+  source ~/.fzf.bash
+
+  #export FZF_COMPLETION_TRIGGER=§
+  # As per globstar enabled, this will not work, so....
+  #export FZF_COMPLETION_TRIGGER=?
+
+  _fzf_complete_ssh_notrigger() {
+    FZF_COMPLETION_TRIGGER='' _fzf_complete_ssh
+  }
+
+  #complete -o bashdefault -o default -F _fzf_complete_ssh_notrigger ssh
+fi
+
+# FOR zsh see the z4h examples as they've nicer previews all the time
+FZF_CTRL_T_OPTS="--select-1 --exit-0 --preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:4:hidden:wrap --bind '?:toggle-preview'"
+
+FZF_DEFAULT_OPTS="--bind=alt-k:up --bind=alt-j:down --bind=alt-h:backward-char --bind=alt-l:forward-char"
+FZF_DEFAULT_OPTS+=" --bind=alt-b:backward-word --bind=alt-w:forward-word --bind=alt-e:forward-word"
+FZF_DEFAULT_OPTS+=" --bind=alt-u:page-up --bind=alt-n:page-down"
+FZF_DEFAULT_OPTS+=" --bind=ctrl-w:backward-kill-word"
+FZF_DEFAULT_OPTS+=" --bind=tab:accept --bind=ctrl-space:accept"
+# FZF_DEFAULT_OPTS+=" --bind=ctrl-del:kill-word --bind=ctrl-bspace:backward-kill-word"
+
+FZF_ACCEPT_ARROWS_OPTS="--bind=alt-h:accept --bind=alt-l:accept --bind=right:accept --bind=left:accept"
+FZF_CTRL_T_OPTS+=" "$FZF_ACCEPT_ARROWS_OPTS
+FZF_ALT_C_OPTS+=" "$FZF_ACCEPT_ARROWS_OPTS
+
+# Use fzf to autocomplete all the times https://github.com/marlonrichert/zsh-autocomplete
+
+# Look at https://github.com/wfxr/forgit for git + fzf implementation

@@ -1,0 +1,15 @@
+logs/
+weechat.log
+(?d)**/.@__thumb/
+(?d)**.weechatlog
+(?d)**.o
+(?d)**.Po
+(?d)**.lo
+(?d)**.a
+(?d)**.la
+(?d)**.la
+(?d)**.iso
+(?d)**.qcow2
+(?d)**.vdi
+(?d)**.snap
+(?d)**~

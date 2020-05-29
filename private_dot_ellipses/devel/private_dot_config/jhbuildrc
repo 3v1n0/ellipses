@@ -1,0 +1,111 @@
+# -*- mode: python -*-
+# -*- coding: utf-8 -*-
+import resource
+from random import randint
+
+resource.setrlimit(
+    resource.RLIMIT_CORE,
+    (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+
+# if you have a GNOME git account, uncomment this line
+repos['git.gnome.org'] = 'ssh://git@gitlab.gnome.org/GNOME'
+# repos['gitlab.gnome.org'] = 'ssh://git@gitlab.gnome.org/GNOME'
+
+# what module set should be used.  The default can be found in
+# jhbuild/defaults.jhbuildrc, but can be any file in the modulesets directory
+# or a URL of a module set file on a web server.
+# moduleset = 'gnome-apps-3.12'
+#
+# A list of the modules to build.  Defaults to the GNOME core and tested apps.
+# modules = [ 'meta-gnome-core', 'meta-gnome-apps-tested' ]
+modules = [ 'meta-gnome-core-shell', 'The X Window System' ]
+
+skip = ['WebKit', 'evolution']
+
+# what directory should the source be checked out to?
+checkoutroot = '/media/M2/GNOME'
+
+# the prefix to configure/install modules to (must have write access)
+prefix = '/opt/dev/GNOME'
+
+# Extra modules
+moduleset = [moduleset,
+             'https://cgit.freedesktop.org/xorg/util/modular/plain/xorg.modules',
+             checkoutroot + '/extra-jhbuild.modules']
+
+xdg_cache_home = os.path.join(checkoutroot, '_CACHE')
+tarballdir = os.path.join(xdg_cache_home, 'downloads')
+
+# Set to None to perform builds within the source trees.
+buildroot = os.path.join(checkoutroot, '_BUILD')
+
+# reduce what we build as much as possible
+ignore_suggests = True
+
+# Only rebuild modules that have changed
+build_policy = 'updated'
+
+# Custom env
+os.environ['JHBUILD_CHECKOUT_FOLDER'] = checkoutroot
+os.environ['JHBUILD_BUILD_FOLDER'] = buildroot
+os.environ['MALLOC_CHECK_'] = '2' # or 3?
+os.environ['MALLOC_PERTURB_'] = str(randint(0x01, 0xff))
+os.environ['TRACKER_TEST_DOMAIN_ONTOLOGY_RULE'] = 'foo'
+os.environ['NO_AT_BRIDGE'] = '1'
+
+# custom CFLAGS / environment pieces for the build
+# os.environ['CFLAGS'] = '-Wall -g -O0'
+
+# Look in /usr/share for icons, D-BUS service files, etc
+addpath('XDG_DATA_DIRS', '/usr/share')
+# Look in /etc/xdg for system-global autostart files
+addpath('XDG_CONFIG_DIRS', '/etc/xdg')
+# Ensure that xcursors are available
+addpath('XCURSOR_PATH', '/usr/share/icons')
+# Load system GI files
+addpath('GI_TYPELIB_PATH', '/usr/lib/girepository-1.0')
+addpath('GI_TYPELIB_PATH', '/usr/lib/x86_64-linux-gnu/girepository-1.0')
+
+# extra arguments to pass to all autogen.sh scripts
+# to speed up builds of GNOME, try '--disable-static --disable-gtk-doc'
+autogenargs = '--disable-static --disable-gtk-doc'
+mesonargs = '--buildtype=debugoptimized -Dgtk_doc=false -Ddisable_gtkdoc=true -Denable-man=false -Denable-docs=false'
+
+# Module custom settings
+module_autogenargs['gdm'] = '--with-run-dir=/opt/dev/gdm/run --with-log-dir=/opt/dev/gdm/log --with-udevdir=/opt/dev/gdm/udev/rules.d/'
+# module_autogenargs['mutter'] = '--enable-debug' #--enable-remote-desktop
+module_autogenargs['-shell'] = '-Db_sanitize=address' #--enable-remote-desktop
+module_autogenargs['geoclue'] = '--disable-nmea-source'
+module_autogenargs['libinput'] = '--disable-documentation --enable-tests=no'
+module_autogenargs['xserver'] = '--disable-docs --disable-devel-docs --enable-xwayland --enable-kdrive --enable-kdrive-kbd --enable-kdrive-mouse --enable-glamor --enable-xephyr --disable-xvfb --disable-xnest --disable-xquartz --disable-xwin'
+
+# module_autogenargs['gjs'] = '--enable-asan --enable-ubsan'
+
+module_mesonargs['nautilus'] = '-Dtracker=false'
+module_mesonargs['gnome-control-center'] = '-Dcheese=false'
+module_mesonargs['gstreamer'] = '-Dgtk_doc=disabled'
+module_mesonargs['json-glib'] = '-Dgtk_doc=disabled'
+# module_mesonargs['gnome-shell'] = '-Db_sanitize=address --libdir lib  --buildtype=debugoptimized -Dgtk_doc=false -Ddisable_gtkdoc=true -Denable-man=false -Denable-docs=false'
+# module_mesonargs['mutter'] = '--buildtype=debug -Db_sanitize=address -Dintrospection=false'
+module_mesonargs['gnome-shell'] = '-Dsystemd=false' #'-Db_sanitize=address'
+
+# Custom branches
+# branches['gnome-settings-daemon'] = ('https://github.com/jadahl/gnome-settings-daemon/', 'wip/monitor-config')
+# or  https://github.com/jadahl/gnome-control-center/commits/wip/monitor-config
+# branches['gnome-control-center'] = (None, 'wip/rtcm/new-display-config')
+
+#branches['mutter'] = ('https://github.com/jadahl/mutter', 'wip/resource-scale')
+# branches['pipewire'] = ('https://github.com/PipeWire/pipewire.git', 'master')
+# branches['gnome-shell'] = ('https://github.com/jadahl/gnome-shell', 'wip/resource-scale')
+
+# branches['gtksourceview'] = (None, 'gnome-3-24')
+# branches['libsoup'] = (None, 'gnome-3-28')
+
+# A string listing additional arguments to be passed to make.
+# Set makeargs to 'V=1' for verbose build output.
+makeargs = '-j10'
+
+# git clone --depth=1
+# shallow_clone = True
+
+#installprog=scp

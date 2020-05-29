@@ -10,8 +10,16 @@ dotted_ellipses="$(realpath --relative-to="$CHEZMOI" "$abs_dotted_ellipses")"
 rm -fv $(fgrep -R -l --include "symlink_*.tmpl" "$dotted_ellipses" "$CHEZMOI") \
     $(fgrep -R -l --include "symlink_*" "/$real_ellipses/" "$CHEZMOI")
 
+b_basename() {
+    echo "${1##*/}"
+}
+
+b_dirname() {
+    echo "${1%/*}"
+}
+
 get_real_name() {
-    basename="$1"
+    basename="$(b_basename "$1")"
 
     if [[ "$basename" =~ ^([a-z]+_)?([a-z]+_)?dot_(.*) ]]; then
         basename=".${BASH_REMATCH[3]}"
@@ -28,8 +36,8 @@ generate_link() {
     local fullpkg="$3"
     local tgt path rel
 
-    bf=$(basename "$f")
-    df=$(dirname "$f")
+    bf=$(b_basename "$f")
+    df=$(b_dirname "$f")
     name=$(get_real_name "$bf")
     e_rel_path="$real_ellipses/$fullpkg/$name"
     e_abs_path=$HOME/$e_rel_path
@@ -38,7 +46,7 @@ generate_link() {
     if ! [ -d "$CHEZMOI/$rel_path" ]; then
         echo "Path $CHEZMOI/$rel_path does not exist"
         echo "Ensure you added it and with correct permissions"
-        echo "BUt absolute exists $(dirname $e_abs_path) ?"
+        echo "BUt absolute exists $(b_dirname $e_abs_path) ?"
         exit 1
     fi
 
@@ -76,7 +84,7 @@ generate_link() {
 
 visit_directory() {
     dir="$1"
-    bdir="$(basename "$dir")"
+    bdir="$(b_basename "$dir")"
     pkg="$(get_real_name "$bdir")"
 
     if ! [ -d "$dir" ] || [[ "${pkg[1]}" == "." ]]; then
@@ -95,7 +103,7 @@ visit_directory() {
         if [ -L "$f" ]; then
             continue
         elif [ -d "$f" ]; then
-            subdir="$(get_real_name "$(basename "$f")")"
+            subdir="$(get_real_name "$(b_basename "$f")")"
 
             if [ -f "$HOME/$real_ellipses/$fullpkg/$subdir/.ellipses-ignore" ]; then
                 continue
@@ -110,9 +118,11 @@ visit_directory() {
                 visit_directory "$f"
                 allsubs=$presubs
             else
+                echo "generate_link "$f" "$current_pkg" "$fullpkg""
                 generate_link "$f" "$current_pkg" "$fullpkg"
             fi
         else
+            echo "generate_link "$f" "$current_pkg" "$fullpkg""
             generate_link "$f" "$current_pkg" "$fullpkg"
         fi
     done

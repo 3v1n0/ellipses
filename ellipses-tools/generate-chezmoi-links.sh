@@ -10,23 +10,16 @@ dotted_ellipses="$(realpath --relative-to="$CHEZMOI" "$abs_dotted_ellipses")"
 rm -fv $(fgrep -R -l --include "symlink_*.tmpl" "$dotted_ellipses" "$CHEZMOI") \
     $(fgrep -R -l --include "symlink_*" "/$real_ellipses/" "$CHEZMOI")
 
-is_dotted() {
-    if [[ "$1" =~ ^([a-z]+_)?([a-z]+_)?dot_(.*) ]]; then
-        echo "${BASH_REMATCH[3]%.tmpl}"
-    fi
-}
-
 get_real_name() {
     basename="$1"
-    undotted_file="$(is_dotted "$basename")"
 
-    if [ -n "$undotted_file" ]; then
-        echo ".${undotted_file}"
-    elif [[ "$1" =~ ^([a-z]+_)?([a-z]+_)?(.*) ]]; then
-        echo "${BASH_REMATCH[3]%.tmpl}"
-    else
-        echo "${basename%.tmpl}"
+    if [[ "$basename" =~ ^([a-z]+_)?([a-z]+_)?dot_(.*) ]]; then
+        basename=".${BASH_REMATCH[3]}"
+    elif [[ "$basename" =~ ^([a-z]+_)?([a-z]+_)?(.*) ]]; then
+        basename="${BASH_REMATCH[3]}"
     fi
+
+    echo "${basename%.tmpl}"
 }
 
 generate_link() {

@@ -105,7 +105,8 @@ visit_directory() {
         elif [ -d "$f" ]; then
             subdir="$(get_real_name "$(b_basename "$f")")"
 
-            if [ -f "$HOME/$real_ellipses/$fullpkg/$subdir/.ellipses-ignore" ]; then
+            if [ -f "$current_dir/.ellipses-ignore" ] ||
+               [ -f "$HOME/$real_ellipses/$fullpkg/$subdir/.ellipses-ignore" ]; then
                 continue
             fi
 

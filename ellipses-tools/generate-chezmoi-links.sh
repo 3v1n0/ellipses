@@ -67,7 +67,7 @@ generate_link() {
     if ! [ -d "$CHEZMOI/$rel_path" ]; then
         echo "Path $CHEZMOI/$rel_path does not exist"
         echo "Ensure you added it and with correct permissions"
-        echo "BUt absolute exists $(b_dirname $e_abs_path) ?"
+        echo "But absolute path $(b_dirname $e_abs_path) exists, match their permissions"
         exit 1
     fi
 

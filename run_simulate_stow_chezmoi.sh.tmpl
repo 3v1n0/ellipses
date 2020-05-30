@@ -8,23 +8,22 @@ fi
 
 $CHEZMOI/ellipses-tools/generate-chezmoi-links.sh
 
-diff="$(chezmoi diff --no-pager)"
-
-if [ -n "$diff" ]; then
-    echo
-    chezmoi diff
-    confirmed=
+if git -C "$CHEZMOI" ls-files --other --directory --exclude-standard | fgrep -qs symlink_; then
+    echo "Looks like there may be other changes to apply in chezmoi, want to proceed?"
+    # Calling "chezmoi diff" here to see what's going on may hang everything
 
     while true; do
-        read -p "Do you want to apply the changes now? [Y/n] "
+        read -p "Do you want to apply the changes now? [Y/n] " yn
         case $yn in
-                [Yy]* ) confirmed=true ;;
-                [Nn]* ) exit 1;;
+                [Yy]* )
+                    confirmed=true;
+                    break ;;
+                [Nn]* )
+                    exit 0;;
         esac
     done
 
     if [ -n "$confirmed" ]; then
-        export ELLIPSES_REAPPLY=true
-        chezmoi -v apply
+        (env ELLIPSES_REAPPLY=true chezmoi -v apply) &
     fi
 fi

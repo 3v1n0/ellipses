@@ -152,12 +152,30 @@ visit_directory() {
         current_pkg="$bdir"
     fi
 
+    if [ -n "$allsubs" ]; then
+        rel="$(realpath --relative-to="$CHEZMOI/$dotted_ellipses/$current_pkg" "$dir")"
+        src_path=$(chezmoi source-path "$HOME/$allsubs" || echo "")
+        src_base="$(b_basename "$src_path")"
+
+        if [ -n "$src_base" ] && [[ "$src_base" != "$bdir" ]]; then
+            if [[ "$src_base" == "private_"* ]]; then
+                attr="private"
+            else
+                attr="noprivate"
+            fi
+
+            chezmoi chattr -v $attr "$HOME/$real_ellipses/$current_pkg/$allsubs"
+            return 1
+        fi
+    fi
+
     for f in "$dir"/*; do
         if [ -L "$f" ]; then
             continue
         elif [ -d "$f" ]; then
             local current_dir=$f
-            subdir="$(get_real_name "$(b_basename "$current_dir")")"
+            subdir_name="$(b_basename "$current_dir")"
+            subdir="$(get_real_name "$subdir_name")"
 
             if [ -f "$current_dir/.ellipses-ignore" ] ||
                [ -f "$HOME/$real_ellipses/$fullpkg/$subdir/.ellipses-ignore" ]; then
@@ -196,7 +214,9 @@ for i in "$CHEZMOI/$dotted_ellipses"/*; do
     current_pkg=
     fullpkg=
     allsubs=
-    visit_directory "$i"
+    if ! visit_directory "$i"; then
+        visit_directory "$i"
+    fi
 done
 
 

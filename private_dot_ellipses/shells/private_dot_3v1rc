@@ -526,7 +526,7 @@ __my_theme_preload_setup() {
     # ADD NON-TURBO-MODE!
     if [ -z "$MY_ZINIT_DISABLE_P10K" ]; then
       [ -n "$MY_ZINIT_USE_TURBO" ] && local $wait=wait
-      zinit $wait atload='!__my_theme_loaded_callback' lucid nocd \
+      zinit $wait depth=1 atload='!__my_theme_loaded_callback' lucid nocd \
         for romkatv/powerlevel10k
       return
     fi

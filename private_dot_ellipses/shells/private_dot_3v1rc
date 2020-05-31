@@ -1031,3 +1031,7 @@ FZF_ALT_C_OPTS+=" "$FZF_ACCEPT_ARROWS_OPTS
 # Use fzf to autocomplete all the times https://github.com/marlonrichert/zsh-autocomplete
 
 # Look at https://github.com/wfxr/forgit for git + fzf implementation
+
+[ -n "$ZSH_VERSION" ] && [ -f "$HOME/.bash_aliases" ] &&
+  source "$HOME/.bash_aliases"
+

@@ -481,13 +481,26 @@ __my_plugins_preload_setup() {
     git
   )
 
-  if [ -z "$FZF_BASE" ]; then
-    # ADD THE SAME FOR NVIM pager!
-    [[ -v ZINIT[HOME_DIR] ]] && zinit pack for fzf
+  # ADD packages for nvim-pager, zsh tools like git differ, example:
+  # zinit lucid as=program pick="$ZPFX/bin/(fzf|fzf-tmux)" \
+  #   atclone="cp shell/completion.zsh _fzf_completion; \
+  #     cp bin/(fzf|fzf-tmux) $ZPFX/bin" \
+  #   make="PREFIX=$ZPFX install" for \
+  #       junegunn/fzf
 
-    if [ -d "${ZINIT[PLUGINS_DIR]}/fzf" ]; then
-      FZF_BASE="${ZINIT[PLUGINS_DIR]}/fzf"
-    elif [ -d "$HOME/Software/fzf" ]; then
+  if [ -z "$FZF_BASE" ]; then
+    if [[ -v ZINIT[HOME_DIR] ]]; then
+      zinit lucid depth=1 as=program pick="$ZPFX/bin/(fzf|fzf-tmux)" \
+        atclone="cp shell/completion.zsh _fzf_completion; \
+          ./install --bin && cp -v bin/(fzf|fzf-tmux) $ZPFX/bin && \
+          zinit creinstall junegunn/fzf" \
+        atpull='%atclone' \
+        atinit="compdef fzf fzf_completion" for \
+            junegunn/fzf
+      FZF_BASE="${ZINIT[PLUGINS_DIR]}/junegunn---fzf"
+    fi
+
+    if [ -z "$FZF_BASE" ] && [ -d "$HOME/Software/fzf" ]; then
       FZF_BASE="$HOME/Software/fzf"
     fi
 

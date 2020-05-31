@@ -6,7 +6,8 @@ if [ -n "$ELLIPSES_REAPPLY" ]; then
     exit 0
 fi
 
-$CHEZMOI/ellipses-tools/generate-chezmoi-links.sh
+ELLIPSES_SILENT=1 \
+    $CHEZMOI/ellipses-tools/generate-chezmoi-links.sh
 
 if git -C "$CHEZMOI" ls-files --other --directory --exclude-standard | fgrep -qs symlink_; then
     echo "Looks like there may be other changes to apply in chezmoi, want to proceed?"

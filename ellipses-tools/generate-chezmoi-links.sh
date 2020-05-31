@@ -7,7 +7,8 @@ real_ellipses=".ellipses"
 abs_dotted_ellipses="$(chezmoi source-path "$HOME/$real_ellipses")"
 dotted_ellipses="$(realpath --relative-to="$CHEZMOI" "$abs_dotted_ellipses")"
 
-rm -fv $(fgrep -R -l --include "symlink_*.tmpl" "$dotted_ellipses" "$CHEZMOI") \
+[ -z "$ELLIPSES_SILENT" ] && rm_args='v'
+rm -f$rm_args $(fgrep -R -l --include "symlink_*.tmpl" "$dotted_ellipses" "$CHEZMOI") \
     $(fgrep -R -l --include "symlink_*" "/$real_ellipses/" "$CHEZMOI")
 
 b_basename() {

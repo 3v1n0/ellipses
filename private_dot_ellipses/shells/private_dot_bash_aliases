@@ -39,12 +39,12 @@ alias pastebin='pastebinit -a "Marco Trevisan (Treviño)" -b "paste.ubuntu.com"'
 alias diff="diff --color=auto"
 alias diffc="diff --color=always"
 #alias diff="diff --color=auto"
-#alias cc-color="colorgcc $(which cc)"
-alias gcc-color="colorgcc $(which gcc)"
-alias g++-color="colorgcc $(which g++)"
-alias c++-color="colorgcc $(which c++)"
+#alias cc-color='colorgcc $(which cc)'
+alias gcc-color='colorgcc $(which gcc)'
+alias g++-color='colorgcc $(which g++)'
+alias c++-color='colorgcc $(which c++)'
 #alias make="if (which colormake); then colormake $*; else make $*; fi"
 alias llh="ls -lh"
 alias llht="ls -lht"
-alias remove_core_files="mkdir /tmp/cores; for i in $(locate --basename --regex "^core$"); do if [ -f "$i" ]; then sudo mv -v $i /tmp/cores/${i//\//_}; fi; done"
-alias weechat-trevi-cloud-print="openssl s_client -connect cloud.trevi.me:3553 < /dev/null 2>/dev/null | openssl x509 -sha512 -fingerprint -noout | tr -d ':' | tr 'A-Z' 'a-z' | cut -d = -f 2"
+alias remove_core_files='mkdir /tmp/cores; for i in $(locate --basename --regex "^core$"); do if [ -f "$i" ]; then sudo mv -v $i /tmp/cores/${i//\//_}; fi; done'
+alias weechat-trevi-cloud-print='openssl s_client -connect cloud.trevi.me:3553 < /dev/null 2>/dev/null | openssl x509 -sha512 -fingerprint -noout | tr -d ':' | tr 'A-Z' 'a-z' | cut -d = -f 2'

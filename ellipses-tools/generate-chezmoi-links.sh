@@ -94,13 +94,12 @@ generate_link() {
 
 handle_autolinks() {
     local dir=$1
-    local fullpkg=$2
+    local subdirs=$2
 
     local autolinks="$(cat "$dir/.ellipses-autolinks")"
     local rel_autolinks_dir="$real_ellipses/$autolinks"
     local abs_autolinks_dir="$HOME/$rel_autolinks_dir"
     local czm_autolinks_dir="$(chezmoi source-path "$abs_autolinks_dir")"
-    local e_rel_path=$real_ellipses/$fullpkg/$subdir
 
     if [ -z "$czm_autolinks_dir" ]; then
         echo "Linkdir pointing to not-existent dir: $abs_autolinks_dir"
@@ -130,7 +129,7 @@ handle_autolinks() {
 
         local rl=$(get_real_name "$al")
 
-        tgt="{{ .chezmoi.homedir }}/$e_rel_path/$rl"
+        tgt="{{ .chezmoi.homedir }}/$subdirs/$rl"
         make_link "$tgt" "$rl" "$rel_autolinks_dir/$rl" "$target_dir"
     done
 }
@@ -199,7 +198,7 @@ visit_directory() {
             fi
 
             if [ -f "$current_dir/.ellipses-autolinks" ]; then
-                handle_autolinks "$current_dir" "$fullpkg"
+                handle_autolinks "$current_dir" "$allsubs/$subdir"
             fi
         else
             generate_link "$f" "$current_pkg" "$fullpkg"

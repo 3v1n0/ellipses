@@ -65,45 +65,49 @@ However, some configurations where we've a mix of auto-generated files we don't 
 ❯ tree -L 2 ~/.ellipses/vim
 ~/.ellipses/vim
 ├── .config
-│   └── nvim
-│       ├── autoload
-│       ├── ftplugin
-│       ├── init.vim
-│       ├── keybindings.vim
-│       ├── pack
-│       ├── pager.vim
-│       ├── plugged
-│       ├── theming.vim
-│       ├── viminfo
-│       └── wildignores.vim
+│   └── nvim
+│       ├── autoload
+│       ├── ftplugin
+│       ├── init.vim
+│       ├── keybindings.vim
+│       ├── pack
+│       ├── pager.vim
+│       ├── plugged
+│       ├── theming.vim
+│       ├── viminfo
+│       └── wildignores.vim
 ├── .vim
-│   ├── autoload
-│   │   └── plug.vim
-│   ├── init.vim -> ~/.ellipses/vim/.config/nvim/init.vim
-│   ├── keybindings.vim -> ~/.ellipses/vim/.config/nvim/keybindings.vim
-│   ├── .netrwhist
-│   ├── pager.vim -> ~/.ellipses/vim/.config/nvim/pager.vim
-│   ├── plugged
-│   ├── .stignore
-│   ├── theming.vim -> ~/.ellipses/vim/.config/nvim/theming.vim
-│   ├── viminfo
-│   ├── .viminfo
-│   └── wildignores.vim -> ~/.ellipses/vim/.config/nvim/wildignores.vim
-└── .vimrc -> .config/nvim/init.vim
+│   ├── autoload
+│   │   └── plug.vim
+│   ├── init.vim -> ~/.config/nvim/init.vim
+│   ├── keybindings.vim -> ~/.config/nvim/keybindings.vim
+│   ├── .netrwhist
+│   ├── pager.vim -> ~/.config/nvim/pager.vim
+│   ├── plugged
+│   │   ├── ctrlp.vim
+│   │   └── vim-visual-multi
+│   ├── .stignore
+│   ├── theming.vim -> ~/.config/nvim/theming.vim
+│   ├── viminfo
+│   ├── .viminfo
+│   └── wildignores.vim -> ~/.config/nvim/wildignores.vim
+└── .vimrc -> .config/nvim/init.vi
 
 # Generating
 ❯ tree -L 1 ~/.vim
 ~/.vim
+~/.vim
 ├── autoload
-├── init.vim -> ~/.ellipses/vim/.config/nvim/init.vim
-├── keybindings.vim -> ~/.ellipses/vim/.config/nvim/keybindings.vim
-├── pager.vim -> ~/.ellipses/vim/.config/nvim/pager.vim
+├── init.vim -> ~/.config/nvim/init.vim
+├── keybindings.vim -> ~/.config/nvim/keybindings.vim
+├── nvimpager
+├── pager.vim -> ~/.config/nvim/pager.vim
 ├── plugged
-├── theming.vim -> ~/.ellipses/vim/.config/nvim/theming.vim
+├── theming.vim -> ~/.config/nvim/theming.vim
 ├── viminfo
-└── wildignores.vim -> ~/.ellipses/vim/.config/nvim/wildignores.vim
+└── wildignores.vim -> ~/.config/nvim/wildignores.vim
 
-❯ tree -L 1 ~/.config/nvim
+❯ tree -a -L 1 ~/.config/nvim
 ~/.config/nvim
 ├── init.vim -> ~/.local/share/chezmoi/private_dot_ellipses/vim/private_dot_config/private_nvim/init.vim
 ├── keybindings.vim -> ~/.local/share/chezmoi/private_dot_ellipses/vim/private_dot_config/private_nvim/keybindings.vim

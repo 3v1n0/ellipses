@@ -45,6 +45,14 @@ execute 'noremap! ' . Meta('j') . ' <down>'
 execute 'noremap! ' . Meta('k') . ' <up>'
 execute 'noremap! ' . Meta('l') . ' <right>'
 
+" Move by line when wrapping
+execute 'nnoremap <buffer> ' . Meta('j') . ' gj'
+execute 'nnoremap <buffer> ' . Meta('k') . ' gk'
+execute RemapAltKeyInInsertMode('j', 'gj')
+execute RemapAltKeyInInsertMode('k', 'gk')
+execute RemapSelectionKey(Meta(toupper('k')), 'gk')
+execute RemapSelectionKey(Meta(toupper('j')), 'gj')
+
 "inoremap! <C-h> <left>
 "inoremap! <C-j> <down>
 "inoremap! <C-k> <up>
@@ -182,5 +190,48 @@ nnoremap <C-A-S-j> :m+1<CR>
 vnoremap <C-A-S-j> :m '>+1<CR>
 
 """ End of VIM traitor side """
+
+
+"Support linewrapping by default - To fix and use functions
+noremap <silent> <Leader>w :call ToggleWrap()<CR>
+function ToggleWrap()
+  if &wrap
+    echo "Wrap OFF"
+    setlocal nowrap
+    set virtualedit=all
+    silent! nunmap <buffer> <Up>
+    silent! nunmap <buffer> <Down>
+    silent! nunmap <buffer> <Home>
+    silent! nunmap <buffer> <End>
+    silent! iunmap <buffer> <Up>
+    silent! iunmap <buffer> <Down>
+    silent! iunmap <buffer> <Home>
+    silent! iunmap <buffer> <End>
+  else
+    echo "Wrap ON"
+    setlocal wrap linebreak nolist
+    set virtualedit=
+    setlocal display+=lastline
+    noremap  <buffer> <silent> <Up>   gk
+    noremap  <buffer> <silent> <Down> gj
+    noremap  <buffer> <silent> <Home> g<Home>
+    noremap  <buffer> <silent> <End>  g<End>
+    inoremap <buffer> <silent> <Up>   <C-o>gk
+    inoremap <buffer> <silent> <Down> <C-o>gj
+    inoremap <buffer> <silent> <Home> <C-o>g<Home>
+    inoremap <buffer> <silent> <End>  <C-o>g<End>
+  endif
+endfunction
+
+noremap  <buffer> k gk
+noremap  <buffer> j gj
+noremap  <buffer> <Up>   gk
+noremap  <buffer> <Down> gj
+noremap  <buffer> <Home> g<Home>
+noremap  <buffer> <End>  g<End>
+inoremap <buffer> <Up>   <C-o>gk
+inoremap <buffer> <Down> <C-o>gj
+inoremap <buffer> <Home> <C-o>g<Home>
+inoremap <buffer> <End>  <C-o>g<End>
 
 

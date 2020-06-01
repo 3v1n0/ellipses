@@ -348,7 +348,7 @@ if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; 
       my_zinit_modules_build
     elif [ -z "$ZINIT_MODULE_BULD_WARNING_MUTE" ] && \
       ! (( ${${(@f)"$(zmodload)"}[(I)zdharma/zplugin]} )); then
-      echo "Use `zinit module build` to build the zinit module"
+      echo "Use 'zinit module build' to build the zinit module or add"
     fi
   fi
 fi

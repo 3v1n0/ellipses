@@ -119,8 +119,6 @@
   [ -n "$P9K_SSH" ] &&
     host_color=$light_green
 
-  typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%F{$user_color}%n%f@%F{$host_color}%m%f"
-
   if [ -n "$SCHROOT_ALIAS_NAME" ]; then
     local schroot_color=${purple}
     [[ "$SCHROOT_ALIAS_NAME" == "unstable" ]] && \
@@ -140,6 +138,16 @@
 
     # typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_CONTENT_EXPANSION=
     typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%F{$host_color}%m%f"
+  else
+    if [ -n "$ZHS_IN_UBUNTU" ]; then
+      # Check for [ -f "/etc/cloud/cloud.cfg" ] if we want this only in server instances
+      host_color=208
+      user_color=245
+      typeset -g POWERLEVEL9K_DIR_FOREGROUND=161
+      typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS}_FOREGROUND=253
+    fi
+
+    typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%F{$user_color}%n%f@%F{$host_color}%m%f"
   fi
 
   # Show previous command duration only if it's >= 5s.

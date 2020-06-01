@@ -1,3 +1,9 @@
 ZDOTDIR=${XDG_CONFIG_HOME:-$HOME/.config}/zsh
 
+if (( ${${(@f)"$(</etc/os-release)"}[(I)*(ubuntu|debian)*]} )); then
+  # Skip the not really helping Ubuntu global compinit
+  skip_global_compinit=1
+  ZHS_IN_UBUNTU=true
+fi
+
 [ -f $ZDOTDIR/.zshenv-override ] && source $ZDOTDIR/.zshenv-override

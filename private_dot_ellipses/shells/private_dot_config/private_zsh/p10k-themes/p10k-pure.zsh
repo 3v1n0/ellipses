@@ -43,7 +43,9 @@
   local yellow='3'
   local blue='4'
   local green='35'
+  local light_green='046'
   local magenta='5'
+  local purple='129'
   local cyan='6'
   local white='7'
 
@@ -109,16 +111,24 @@
 
   # Context format when root: user@host. The first part white, the rest grey.
   typeset -g POWERLEVEL9K_CONTEXT_ROOT_TEMPLATE="%F{$white}%n%f%F{$grey}@%m%f"
-  # Context format when not root: user@host. The whole thing grey.
-  typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%F{$grey}%n@%m%f"
 
-  local schroot_color=${grey}
-  [[ "$SCHROOT_ALIAS_NAME" == "unstable" ]] && schroot_color=$magenta
+  # Context format when not root: user@host. The whole thing grey.
+  local user_color=$grey
+  local host_color=$grey
+
+  [ -n "$P9K_SSH" ] &&
+    host_color=$light_green
+
+  typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%F{$user_color}%n%f@%F{$host_color}%m%f"
 
   if [ -n "$SCHROOT_ALIAS_NAME" ]; then
+    local schroot_color=${purple}
+    [[ "$SCHROOT_ALIAS_NAME" == "unstable" ]] && \
+      schroot_color=$magenta
+
     typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%F{$schroot_color}$SCHROOT_ALIAS_NAME%f"
   elif [[ "$USER" == "marco" ]]; then
-    local host_color=$grey
+    host_color=$grey
 
     if [[ "$HOST" == "tricky" ]]; then
       host_color=208

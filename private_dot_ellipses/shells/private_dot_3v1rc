@@ -11,6 +11,7 @@ esac
 if [ -n "$ZSH_VERSION" ]; then
   typeset -g MY_ZSH_CONFIG_PATH=${ZDOTDIR:-$HOME/.config/zsh}
   typeset -g MY_ZINIT_PATH=$HOME/.zinit
+  typeset -g HOSTNAME=$HOST
 
   if [ -f "$MY_ZINIT_PATH/bin/zmodules/Src/zdharma/zplugin.so" ]; then
     module_path+=( "$MY_ZINIT_PATH/bin/zmodules/Src" )
@@ -306,6 +307,8 @@ if [ -n "$BASH_VERSION" ] && [ -z "$BASH_IT" ] &&
   PROMPT_COMMAND="_3v1_set_prompt; $PROMPT_COMMAND"
 fi
 
+[ -f "$HOME/.3v1rc_$HOSTNAME" ] && source "$HOME/.3v1rc_$HOSTNAME"
+
 # Set this to disable ZINIT
 # MY_NO_ZINIT=true
 
@@ -349,6 +352,7 @@ if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; 
     elif [ -z "$ZINIT_MODULE_BULD_WARNING_MUTE" ] && \
       ! (( ${${(@f)"$(zmodload)"}[(I)zdharma/zplugin]} )); then
       echo "Use 'zinit module build' to build the zinit module or add"
+      echo "  ZINIT_MODULE_BULD_WARNING_MUTE=y to $HOME/.3v1rc_$HOST"
     fi
   fi
 fi

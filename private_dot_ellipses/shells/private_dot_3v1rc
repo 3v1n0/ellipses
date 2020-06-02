@@ -337,13 +337,13 @@ if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; 
 
     unset MY_ZINIT_PATH # Use ZINIT[HOME_DIR] from now on
 
-    [ ${${(s:.:)ZSH_VERSION}[1]} -gt 5 ] && [ ${${(s:.:)ZSH_VERSION}[2]} -gt 2 ] && \
+    [ ${${(s:.:)ZSH_VERSION}[1]} -ge 5 ] && [ ${${(s:.:)ZSH_VERSION}[2]} -gt 2 ] && \
       MY_ZINIT_USE_TURBO=true
 
     my_zinit_modules_build() {
 # atclone="zinit module build && zmodload -u fooo &> /dev/null; zmodload zdharma/zplugin" \
-      # zinit wait atclone='echo Cloned in $PWD' atpull="%atclone"
-      # zinit wait is-snippet atclone='echo cloned!' for "$ZINIT[BIN_DIR]/zmodules"
+      # zinit wait lucid atclone='echo Cloned in $PWD' atpull="%atclone"
+      # zinit wait lucid is-snippet atclone='echo cloned!' for "$ZINIT[BIN_DIR]/zmodules"
       return
     }
 
@@ -522,20 +522,19 @@ __my_theme_preload_setup() {
   P10K_THEME_PATH="$MY_ZSH_CONFIG_PATH/p10k-themes/$P10K_THEME.zsh"
   POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
-  [ -n "$P10K_THEME" ] && \
-    _my_zsh_custom_plugins+=(romkatv/powerlevel10k)
-
   if [[ -v ZINIT[HOME_DIR] ]]; then
     unset ZSH_THEME
 
-    # ADD NON-TURBO-MODE!
+    # See if we can load it turbo mode
     if [ -z "$MY_ZINIT_DISABLE_P10K" ]; then
-      [ -n "$MY_ZINIT_USE_TURBO" ] && local $wait=wait
-      zinit $wait depth=1 atload='!__my_theme_loaded_callback' lucid nocd \
+      zinit light-mode depth=1 atload='!__my_theme_loaded_callback' lucid nocd \
         for romkatv/powerlevel10k
       return
     fi
   fi
+
+  [ -n "$P10K_THEME" ] && \
+    _my_zsh_custom_plugins+=(romkatv/powerlevel10k)
 
   # Set name of the theme to load --- if set to "random", it will
   # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -660,13 +659,20 @@ __my_zsh_plugins_load() {
   if [[ -v ZINIT[HOME_DIR] ]]; then
     if [ -n "$MY_ZINIT_USE_TURBO" ]; then
       for p in $_my_omz_plugins; do
-        zinit wait is-snippet
-        zinit snippet $ZSH/plugins/$p/$p.plugin.zsh
+        zinit wait lucid is-snippet for $ZSH/plugins/$p/$p.plugin.zsh
       done
 
-      zinit wait depth=1 for ${_my_zsh_custom_plugins[@]:0:-1}
-      zinit wait depth=1 nocd atload='__my_plugins_loaded_callback' \
-        for ${_my_zsh_custom_plugins[-1]}
+      local loaded_plugins=()
+      __zinit_plugin_loaded_callback() {
+        loaded_plugins+=($ZINIT[CUR_PLUGIN])
+
+        if [ ${#_my_zsh_custom_plugins[@]} -eq ${#loaded_plugins[@]} ]; then
+          __my_plugins_loaded_callback
+        fi
+      }
+
+      zinit wait lucid depth=1 nocd atload='__zinit_plugin_loaded_callback' \
+        for ${_my_zsh_custom_plugins[@]}
     else
       zinit depth=1 light-mode for ${_my_zsh_custom_plugins[@]}
 
@@ -710,7 +716,7 @@ if [ -n "$ZSH_VERSION" ]; then
     }
 
     if [ -n "$MY_ZINIT_USE_TURBO" ]; then
-      zinit wait depth=1 nocompletions \
+      zinit wait lucid depth=1 nocompletions \
         atinit='ZSH=$PWD' \
         atload='__my_zinit_after_omz_load' \
           for ohmyzsh/ohmyzsh
@@ -817,7 +823,7 @@ export_dev_paths() {
   fi
 }
 
-[ -z "$ZSH_VERSION" ] || [ -z "$MY_ZINIT_USE_TURBO"] &&
+[ -z "$ZSH_VERSION" ] || [ -z "$MY_ZINIT_USE_TURBO" ] &&
   export_dev_paths
 
 # Replace cd with pushd https://gist.github.com/mbadran/130469

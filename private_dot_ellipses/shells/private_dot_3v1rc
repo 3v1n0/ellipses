@@ -662,6 +662,14 @@ __my_zsh_plugins_load() {
         zinit wait lucid is-snippet for $ZSH/plugins/$p/$p.plugin.zsh
       done
 
+      __zinit_plugin_init_callback() {
+        # FIXME, doesn't handle $ZINIT[CUR_PLUGIN]
+        # https://github.com/zdharma/zinit/issues/356
+        if [[ "${PWD:t}" == *"---zsh-bash-completions-fallback" ]]; then
+          export ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_DISABLE=true
+        fi
+      }
+
       local loaded_plugins=()
       __zinit_plugin_loaded_callback() {
         loaded_plugins+=($ZINIT[CUR_PLUGIN])
@@ -671,8 +679,11 @@ __my_zsh_plugins_load() {
         fi
       }
 
-      zinit wait lucid depth=1 nocd atload='__zinit_plugin_loaded_callback' \
-        for ${_my_zsh_custom_plugins[@]}
+      # Add back 'nocd' when above issue 356 is fixed
+      zinit wait lucid depth=1 \
+        atinit='__zinit_plugin_init_callback' \
+        atload='__zinit_plugin_loaded_callback' \
+          for ${_my_zsh_custom_plugins[@]}
     else
       zinit depth=1 light-mode for ${_my_zsh_custom_plugins[@]}
 

@@ -5,7 +5,10 @@ compile_commands.json
 _BUILD
 _BUILD_*
 build
+build_*
 build-*
+_build-*
+_build_*
 builddir
 objdir
 obj-*-linux-gnu

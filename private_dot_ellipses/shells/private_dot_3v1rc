@@ -499,7 +499,8 @@ __my_plugins_preload_setup() {
           ./install --bin && cp -v bin/(fzf|fzf-tmux) $ZPFX/bin && \
           zinit creinstall junegunn/fzf" \
         atpull='%atclone' \
-        atload="zicompdef fzf fzf_completion" for \
+        atload="zicompdef _fzf_completion fzf" \
+          for \
             junegunn/fzf
       FZF_BASE="${ZINIT[PLUGINS_DIR]}/junegunn---fzf"
     fi

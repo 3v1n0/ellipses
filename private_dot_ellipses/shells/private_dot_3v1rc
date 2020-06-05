@@ -480,7 +480,7 @@ __my_plugins_preload_setup() {
     zsh-users/zsh-autosuggestions
     zsh-users/zsh-completions
     3v1n0/zsh-bash-completions-fallback
-    zsh-users/zsh-syntax-highlighting
+    zdharma/fast-syntax-highlighting
     zsh-users/zsh-history-substring-search
   )
 
@@ -689,6 +689,11 @@ __my_zsh_plugins_load() {
         # https://github.com/zdharma/zinit/issues/356
         if [[ "${PWD:t}" == *"---zsh-bash-completions-fallback" ]]; then
           export ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_DISABLE=true
+        elif [[ "${PWD:t}" == *"---fast-syntax-highlighting" ]]; then
+          __my_zinit_init_completions
+        elif [[ "${PWD:t}" == *"---zsh-autosuggestions" ]]; then
+          (( ${+functions[_zsh_autosuggest_start]} )) && \
+            _zsh_autosuggest_start
         fi
       }
 

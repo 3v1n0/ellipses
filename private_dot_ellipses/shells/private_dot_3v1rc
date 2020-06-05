@@ -333,8 +333,10 @@ if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; 
 
     source $MY_ZINIT_PATH/bin/zinit.zsh
 
+    __my_zinit_load_params=(lucid depth=1)
     if [ -n "$SUDO_UID" ]; then
       ZSH_DISABLE_COMPFIX=true
+      __my_zinit_load_params+=(blockf)
     fi
 
     if [ -z "$skip_global_compinit" ]; then
@@ -503,7 +505,7 @@ __my_plugins_preload_setup() {
 
   if [ -z "$FZF_BASE" ]; then
     if [[ -v ZINIT[HOME_DIR] ]]; then
-      zinit lucid depth=1 as=program pick="$ZPFX/bin/(fzf|fzf-tmux)" \
+      zinit ${__my_zinit_load_params[@]} as=program pick="$ZPFX/bin/(fzf|fzf-tmux)" \
         atclone="cp shell/completion.zsh _fzf_completion; \
           ./install --bin && cp -v bin/(fzf|fzf-tmux) $ZPFX/bin && \
           zinit creinstall junegunn/fzf" \
@@ -536,8 +538,9 @@ __my_theme_preload_setup() {
 
     # See if we can load it turbo mode
     if [ -z "$MY_ZINIT_DISABLE_P10K" ]; then
-      zinit light-mode depth=1 atload='!__my_theme_loaded_callback' lucid nocd \
-        for romkatv/powerlevel10k
+      zinit light-mode ${__my_zinit_load_params[@]} nocd \
+        atload='!__my_theme_loaded_callback' for\
+        romkatv/powerlevel10k
       return
     fi
   fi
@@ -677,7 +680,8 @@ __my_zsh_plugins_load() {
   if [[ -v ZINIT[HOME_DIR] ]]; then
     if [ -n "$MY_ZINIT_USE_TURBO" ]; then
       for p in $_my_omz_plugins; do
-        zinit wait lucid is-snippet for $ZSH/plugins/$p/$p.plugin.zsh
+        zinit wait ${__my_zinit_load_params[@]} is-snippet for \
+          $ZSH/plugins/$p/$p.plugin.zsh
       done
 
       __zinit_plugin_init_callback() {
@@ -698,15 +702,17 @@ __my_zsh_plugins_load() {
       }
 
       # Add back 'nocd' when above issue 356 is fixed
-      zinit wait lucid depth=1 \
+      zinit wait ${__my_zinit_load_params[@]} \
         atinit='__zinit_plugin_init_callback' \
         atload='__zinit_plugin_loaded_callback' \
           for ${_my_zsh_custom_plugins[@]}
     else
-      zinit depth=1 light-mode for ${_my_zsh_custom_plugins[@]}
+      zinit light-mode ${__my_zinit_load_params[@]} \
+        for ${_my_zsh_custom_plugins[@]}
 
       for p in $_my_omz_plugins; do
-        zinit snippet $ZSH/plugins/$p/$p.plugin.zsh
+        zinit is-snippet ${__my_zinit_load_params[@]} for \
+          $ZSH/plugins/$p/$p.plugin.zsh
       done
 
       __my_plugins_loaded_callback
@@ -745,14 +751,15 @@ if [ -n "$ZSH_VERSION" ]; then
     }
 
     if [ -n "$MY_ZINIT_USE_TURBO" ]; then
-      zinit wait lucid depth=1 nocompletions \
+      zinit wait nocompletions ${__my_zinit_load_params[@]} \
         atinit='ZSH=$PWD' \
         atload='__my_zinit_after_omz_load' \
           for ohmyzsh/ohmyzsh
     else
-      zinit ice depth=1 nocompletions atinit'ZSH=$PWD;'
-      zinit light ohmyzsh/ohmyzsh
-      __my_zinit_after_omz_load
+      zinit light-mode nocompletions ${__my_zinit_load_params[@]} \
+        atinit='ZSH=$PWD' \
+        atload='__my_zinit_after_omz_load' \
+          for ohmyzsh/ohmyzsh
     fi
   elif [ -n "$ZSH" ] && [ -d "$ZSH" ]; then
     __my_zsh_plugins_load

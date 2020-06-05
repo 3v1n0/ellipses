@@ -321,12 +321,21 @@ if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; 
 
   if [ -f $MY_ZINIT_PATH/bin/zinit.zsh ]; then
     declare -A ZINIT
-    typeset -g ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/.zcompdump-${HOST/.*/}-${ZSH_VERSION}"
+
+    if [ -z "$SUDO_UID" ]; then
+      typeset -g ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/.zcompdump-${HOST/.*/}-${ZSH_VERSION}"
+    else
+      typeset -g ZSH_COMPDUMP="/root/.cache/zcompdump-${HOST/.*/}-${SUDO_USER}-${ZSH_VERSION}"
+    fi
 
     ZINIT[HOME_DIR]="$MY_ZINIT_PATH"
     ZINIT[ZCOMPDUMP_PATH]="$ZSH_COMPDUMP"
 
     source $MY_ZINIT_PATH/bin/zinit.zsh
+
+    if [ -n "$SUDO_UID" ]; then
+      ZSH_DISABLE_COMPFIX=true
+    fi
 
     if [ -z "$skip_global_compinit" ]; then
       autoload -Uz _zinit
@@ -583,16 +592,25 @@ __my_theme_loaded_callback() {
   fi
 }
 
-__my_plugins_loaded_callback() {
-  if [[ -v ZINIT[HOME_DIR] ]]; then
-    if [[ -n "$(eval 'echo ${ZSH_COMPDUMP}(N.mh+24)')" ]]; then
-      zicompinit
-    else
-      zicompinit -C
-    fi;
-
-    zicdreplay
+__my_zinit_init_completions() {
+  if ! [[ -v ZINIT[HOME_DIR] ]]; then
+    return
   fi
+
+  [ -n "$SUDO_UID" ] && \
+    fpath=(${fpath[@]/$ZINIT[HOME_DIR]*})
+
+  if [[ -n "$(eval 'echo ${ZSH_COMPDUMP}(N.mh+24)')" ]]; then
+    zicompinit
+  else
+    zicompinit -C
+  fi;
+
+  [ $? -eq 0 ] && zicdreplay
+}
+
+__my_plugins_loaded_callback() {
+  __my_zinit_init_completions
 
   # Check for __fzfcmd set in history instead
   if ((${_my_omz_plugins[(I)fzf]})); then

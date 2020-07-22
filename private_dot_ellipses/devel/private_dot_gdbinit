@@ -33,3 +33,9 @@ define gtype
     set $type = g_type_name(((GTypeInstance*)($arg0))->g_class->g_type)
     printf "type = %s\n", $type
 end
+
+define hexdump
+   dump binary memory /tmp/gdb-dump.bin $arg0 $arg0+$arg1
+   shell hexdump -C /tmp/gdb-dump.bin
+   end
+end

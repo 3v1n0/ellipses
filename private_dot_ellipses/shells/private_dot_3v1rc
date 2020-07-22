@@ -493,6 +493,7 @@ __my_plugins_preload_setup() {
   # esac
 
   _my_omz_plugins=(
+    command-not-found
     git
   )
 

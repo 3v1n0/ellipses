@@ -439,12 +439,12 @@ __my_default_zsh_settings() {
   bindkey "\eb" backward-word
   bindkey "\ew" forward-word
   bindkey "\ee" forward-word
+  bindkey "\ek" history-search-backward
+  bindkey "\ej" history-search-forward
+
   if (typeset -f history-substring-search-up &> /dev/null); then
-    bindkey "\ek" history-substring-search-up
-    bindkey "\ej" history-substring-search-down
-  else
-    bindkey "\ek" history-search-backward
-    bindkey "\ej" history-search-forward
+    bindkey "\eK" history-substring-search-up
+    bindkey "\eJ" history-substring-search-down
   fi
 
   # Define undo properly

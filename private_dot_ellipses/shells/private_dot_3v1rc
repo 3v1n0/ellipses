@@ -630,6 +630,21 @@ __my_load_zsh_apps() {
             [ -n "$forgit_pager" ] && forgit_pager=$GIT_PAGER' \
       for \
         so-fancy/diff-so-fancy
+
+  # imgur uploader
+  zinit ${__my_zinit_load_params[@]} \
+    wait=2 \
+    as=program \
+    pick="$ZPFX/imgur" \
+    atclone='cp -v imgur.sh $ZPFX/bin/imgur' \
+    atpull='%atclone' \
+    atload=' \
+      imgur-shot-full() { f="$(mktemp).png"; gnome-screenshot -f "$f" ${@} && imgur "$f" && rm -f "$f" }; \
+      alias paste-to-imgur="clippaste-png | imgur -"; \
+      alias imgur-from-clipboard="paste-to-imgur"; \
+      alias imgur-shot-area="imgur-shot-full -a"' \
+      for \
+        tremby/imgur.sh
 }
 
 __my_plugins_loaded_callback() {

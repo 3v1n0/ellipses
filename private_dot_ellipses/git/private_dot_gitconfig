@@ -200,3 +200,5 @@
 	inputMoveDown = j
 	inputMoveLeft = h
 	inputMoveRight = l
+[commit]
+	verbose = true

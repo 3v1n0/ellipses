@@ -182,6 +182,7 @@
 #     color = green
 [core]
     excludesfile = ~/.config/git/global-gitignore
+    #pager = diff-so-fancy | /usr/bin/less -RFX
     #pager = /usr/bin/less
     #pager = "$(command -v tig && echo \"sed 's/\x1b\[[0-9;]*m//g' | tig\" || echo /usr/bin/less)"
     #pager = "$(command -v tig &>/dev/null && echo "sed 's/akjfeahfekah//g' | tig" || echo /usr/bin/less)"

@@ -614,6 +614,24 @@ __my_zinit_init_completions() {
   [ $? -eq 0 ] && zicdreplay
 }
 
+__my_load_zsh_apps() {
+  if ! [[ -v ZINIT[HOME_DIR] ]]; then
+    return
+  fi
+
+  # Diff-so-fancy
+  zinit ${__my_zinit_load_params[@]} \
+    wait=2 \
+    as=program \
+    pick="$ZPFX/bin/diff-so-fancy" \
+    atclone='ln -sfv $PWD/diff-so-fancy $ZPFX/bin' \
+    atpull='%atclone' \
+    atload='export GIT_PAGER="diff-so-fancy | $LESS_BIN -RFX" && \
+            [ -n "$forgit_pager" ] && forgit_pager=$GIT_PAGER' \
+      for \
+        so-fancy/diff-so-fancy
+}
+
 __my_plugins_loaded_callback() {
   __my_zinit_init_completions
 
@@ -672,6 +690,7 @@ __my_plugins_loaded_callback() {
     export_dev_paths
 
   __my_default_zsh_settings
+  __my_load_zsh_apps
 }
 
 __my_zsh_plugins_load() {

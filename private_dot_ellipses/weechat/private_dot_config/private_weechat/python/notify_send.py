@@ -663,9 +663,9 @@ def send_notification(notification):
     notify_cmd = ['notify-send', '--app-name', 'weechat']
     if notification.icon:
         notify_cmd += ['--icon', notification.icon]
-    # if notification.desktop_entry:
-    #     notify_cmd += ['--hint', 'string:desktop-entry:{}'.format(
-    #         notification.desktop_entry)]
+    if notification.desktop_entry:
+        notify_cmd += ['--hint', 'string:desktop-entry:{}'.format(
+            notification.desktop_entry)]
     if notification.timeout:
         notify_cmd += ['--expire-time', str(notification.timeout)]
     if notification.transient:

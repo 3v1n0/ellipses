@@ -523,6 +523,7 @@ __my_plugins_preload_setup() {
 
     if [ -n "$FZF_BASE" ]; then
       _my_omz_plugins+=(fzf)
+      _my_zsh_custom_plugins+=(wfxr/forgit)
     else
       _my_zsh_custom_plugins+=(zdharma/history-search-multi-word)
     fi
@@ -1096,8 +1097,6 @@ FZF_CTRL_T_OPTS+=" "$FZF_ACCEPT_ARROWS_OPTS
 FZF_ALT_C_OPTS+=" "$FZF_ACCEPT_ARROWS_OPTS
 
 # Use fzf to autocomplete all the times https://github.com/marlonrichert/zsh-autocomplete
-
-# Look at https://github.com/wfxr/forgit for git + fzf implementation
 
 [ -n "$ZSH_VERSION" ] && [ -f "$HOME/.bash_aliases" ] &&
   source "$HOME/.bash_aliases"

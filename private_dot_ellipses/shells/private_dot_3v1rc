@@ -647,6 +647,13 @@ __my_load_zsh_apps() {
       alias imgur-shot-area="imgur-shot-full -a"' \
       for \
         tremby/imgur.sh
+
+  zinit ${__my_zinit_load_params[@]} \
+    wait=2 \
+    as=program \
+    atload='alias lg="lazygit"' \
+      for \
+        jesseduffield/lazygit
 }
 
 __my_plugins_loaded_callback() {

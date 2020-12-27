@@ -1,14 +1,13 @@
 .clangd
+.cache/clangd
 .vscode
 compile_commands.json
 
 _BUILD
 _BUILD_*
-build
-build_*
-build-*
 _build-*
 _build_*
+_build*
 builddir
 objdir
 obj-*-linux-gnu

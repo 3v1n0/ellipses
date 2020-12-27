@@ -37,6 +37,10 @@
 [mergetool "Sublime Merge"]
     cmd = smerge mergetool "$BASE" "$REMOTE" "$LOCAL" -o "$MERGED"
 
+[merge "dpkg-mergechangelogs"]
+    name = debian/changelog merge driver
+    driver = dpkg-mergechangelogs -m %O %A %B %A
+
 [alias]
     added = diff --cached
     archive-snapshot = "!f() { git archive -v --prefix=$(basename $(git rev-parse --show-toplevel))-$(git describe --abbrev=0)+git$(git show -s --format=%cs $(git describe) | sed 's/-//g')/ $(git describe) --output=/tmp/$(basename $(git rev-parse --show-toplevel))-$(git describe --abbrev=0)+git$(git show -s --format=%cs $(git describe) | sed 's/-//g').tar.xz; }; f"

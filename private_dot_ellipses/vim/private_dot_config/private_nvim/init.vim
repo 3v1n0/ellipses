@@ -21,6 +21,12 @@ set hlsearch
 set ignorecase
 set smartcase
 
+"Enable spell checks
+autocmd BufRead,BufNewFile *.md setlocal spell spelllang=en_us
+autocmd BufRead,BufNewFile *.txt setlocal spell spelllang=en_us
+autocmd BufRead,BufNewFile README setlocal spell spelllang=en_us
+autocmd FileType gitcommit setlocal spell spelllang=en_us
+
 "Make some chars visibles and handle trailing whitespaces
 set list
 set listchars=tab:▸\.,trail:·,extends:»,precedes:«

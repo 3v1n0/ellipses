@@ -210,3 +210,5 @@
 
 [pull]
 	rebase = true
+[gitubuntu]
+	lpuser = 3v1n0

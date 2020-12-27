@@ -147,6 +147,10 @@ vnoremap <BS> "_d
 nnoremap <BS> X
 nnoremap <Enter> i<Enter>
 
+"Don't cut by default on Del
+inoremap <Del> <C-o>"_x
+noremap <Del> "_x
+
 "Ctrl+del to remove a word
 inoremap <C-Del> <C-o>"_dw
 noremap <C-Del> "_dw

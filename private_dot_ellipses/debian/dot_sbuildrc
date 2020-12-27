@@ -110,6 +110,8 @@ $build_environment = {
 # common configuration.
 #$build_dir = undef;
 
+$log_colour = 1;
+
 # Directory for writing build logs to
 $log_dir = "/tmp/sbuild/logs";
 

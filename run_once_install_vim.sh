@@ -45,6 +45,7 @@ elif [ "$vim_cmd" ]; then
 fi
 
 if [ -n "$vim_cmd" ]; then
+  sudo ln -sf "$vim_cmd" /usr/local/bin/nano
   command -v curl &> /dev/null || sudo apt-get -y install curl # needed by vim-plug
   args=
   tty &> /dev/null || args="--headless"

@@ -181,10 +181,7 @@ visit_directory() {
                 continue
             fi
 
-            if [ -d "$HOME/$allsubs/$subdir" ]; then
-                if [ -L "$HOME/$allsubs/$subdir" ]; then
-                    continue
-                fi
+            if [ -d "$HOME/$allsubs/$subdir" ] && ! [ -L "$HOME/$allsubs/$subdir" ]; then
                 presubs=$allsubs
                 allsubs+="$subdir/"
                 predir=$current_dir

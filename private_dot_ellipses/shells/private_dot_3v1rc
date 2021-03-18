@@ -1142,6 +1142,19 @@ FZF_ACCEPT_ARROWS_OPTS="--bind=alt-h:accept --bind=alt-l:accept --bind=right:acc
 FZF_CTRL_T_OPTS+=" "$FZF_ACCEPT_ARROWS_OPTS
 FZF_ALT_C_OPTS+=" "$FZF_ACCEPT_ARROWS_OPTS
 
+
+if [ -n "$ZSH_VERSION" ]; then
+  # FIXME
+  function _jhbuild() {
+    shift words
+    shift words
+    (( CURRENT-- ))
+    (( CURRENT-- ))
+    _normal
+  }
+  zicompdef _jhbuild jhbuild
+
+fi
 # Use fzf to autocomplete all the times https://github.com/marlonrichert/zsh-autocomplete
 
 [ -n "$ZSH_VERSION" ] && [ -f "$HOME/.bash_aliases" ] &&

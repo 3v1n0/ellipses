@@ -884,7 +884,8 @@ export _JAVA_OPTIONS="-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndF
 
 # Mozilla acceleration force
 #export MOZ_USE_OMTC=1
-if (command -v xinput &> /dev/null && xinput list | grep -q "Touch Controller"); then
+if [ -n "$DISPLAY" ] && \
+   (command -v xinput &> /dev/null && xinput list | grep -q "Touch Controller"); then
   export MOZ_USE_XINPUT2=1
 fi
 

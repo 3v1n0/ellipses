@@ -852,6 +852,8 @@ export EDITOR="$(command -v nvim || command -v vim || command -v ne || command -
 export VISUAL_EDITOR="$(command -v code || command -v subl || command -v nvim || command -v vim)"
 export SUDO_EDITOR=$EDITOR
 
+export FE_IMAP_NAME=trevi@mypec.eu
+
 [[ "$VISUAL_EDITOR" == *"code" ]] && VISUAL=+" --wait"
 # export VISUAL=$VISUAL_EDITOR -- disable this or will always be the ugly GUI!
 

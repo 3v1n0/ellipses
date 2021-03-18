@@ -8,7 +8,7 @@ resource.setrlimit(
     (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
 # if you have a GNOME git account, uncomment this line
-repos['git.gnome.org'] = 'ssh://git@gitlab.gnome.org/GNOME'
+#repos['git.gnome.org'] = 'ssh://git@gitlab.gnome.org/GNOME'
 # repos['gitlab.gnome.org'] = 'ssh://git@gitlab.gnome.org/GNOME'
 
 # what module set should be used.  The default can be found in
@@ -72,7 +72,7 @@ autogenargs = '--disable-static --disable-gtk-doc'
 mesonargs = '--buildtype=debugoptimized -Dgtk_doc=false -Ddisable_gtkdoc=true -Denable-man=false -Denable-docs=false'
 
 # Module custom settings
-module_autogenargs['gdm'] = '--with-run-dir=/opt/dev/gdm/run --with-log-dir=/opt/dev/gdm/log --with-udevdir=/opt/dev/gdm/udev/rules.d/'
+# module_autogenargs['gdm'] = '--with-run-dir=/opt/dev/gdm/run --with-log-dir=/opt/dev/gdm/log --with-udevdir=/opt/dev/gdm/udev/rules.d/'
 # module_autogenargs['mutter'] = '--enable-debug' #--enable-remote-desktop
 module_autogenargs['-shell'] = '-Db_sanitize=address' #--enable-remote-desktop
 module_autogenargs['geoclue'] = '--disable-nmea-source'
@@ -83,11 +83,33 @@ module_autogenargs['xserver'] = '--disable-docs --disable-devel-docs --enable-xw
 
 module_mesonargs['nautilus'] = '-Dtracker=false'
 module_mesonargs['gnome-control-center'] = '-Dcheese=false'
+module_mesonargs['gnome-settings-daemon'] = '-Dcolord=false'
 module_mesonargs['gstreamer'] = '-Dgtk_doc=disabled'
 module_mesonargs['json-glib'] = '-Dgtk_doc=disabled'
 # module_mesonargs['gnome-shell'] = '-Db_sanitize=address --libdir lib  --buildtype=debugoptimized -Dgtk_doc=false -Ddisable_gtkdoc=true -Denable-man=false -Denable-docs=false'
 # module_mesonargs['mutter'] = '--buildtype=debug -Db_sanitize=address -Dintrospection=false'
+module_mesonargs['mutter'] = '--buildtype=debug -Dprofiler=false'
 module_mesonargs['gnome-shell'] = '-Dsystemd=false' #'-Db_sanitize=address'
+module_mesonargs['gdm'] = ' '.join([
+    '-Drun-dir=/opt/dev/gdm/run',
+    '-Dlog-dir=/opt/dev/gdm/log',
+    '-Dudev-dir={}/lib/udev/rules.d/'.format(prefix),
+    '-Dsystemduserunitdir={}/lib/systemd/system'.format(prefix),
+    '-Dsystemdsystemunitdir={}/lib/systemd/user'.format(prefix),
+])
+
+module_mesonargs['libfprint'] = ' '.join([
+    '-Dudev_hwdb_dir={}/lib/udev/hwdb.d/'.format(prefix),
+    '-Dudev_rules_dir={}/lib/udev/rules.d/'.format(prefix),
+])
+module_mesonargs['fprintd'] = ' '.join([
+    '-Dsystemd=false',
+    '-Dpam=true',
+    '-Dpam_modules_dir={}/lib/security'.format(prefix),
+    '-Ddbus_service_dir={}/share/dbus'.format(prefix),
+])
+
+module_mesonargs['gjs'] = '-Dverbose_logs=true'
 
 # Custom branches
 # branches['gnome-settings-daemon'] = ('https://github.com/jadahl/gnome-settings-daemon/', 'wip/monitor-config')

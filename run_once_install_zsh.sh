@@ -42,4 +42,4 @@ if [ -e "$HOME/.bash_history" ] || [ -e "$HOME/.bash_history_eternal_$HOSTNAME" 
   done
 fi
 
-sudo chsh -s "$zsh_cmd"
+sudo chsh -s "$zsh_cmd" $USER

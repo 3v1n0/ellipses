@@ -1,6 +1,7 @@
 .clangd
-.cache/clangd
+.cache
 .vscode
+.eslintcache*
 compile_commands.json
 
 _BUILD

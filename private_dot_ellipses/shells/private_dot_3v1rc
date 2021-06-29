@@ -748,8 +748,7 @@ __my_zsh_plugins_load() {
         fi
       }
 
-      # Add back 'nocd' when above issue 356 is fixed
-      zinit wait ${__my_zinit_load_params[@]} \
+      zinit wait ${__my_zinit_load_params[@]} nocd \
         atinit='__zinit_plugin_init_callback' \
         atload='__zinit_plugin_loaded_callback' \
           for ${_my_zsh_custom_plugins[@]}

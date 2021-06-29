@@ -56,6 +56,19 @@ $build_environment = {
     #'V' => '1',
 };
 
+$external_commands = {
+    "build-deps-failed-commands" => [ [ '%SBUILD_SHELL' ] ],
+    "build-failed-commands" => [ [ '%SBUILD_SHELL' ] ],
+    'chroot-cleanup-commands' => [],
+    #'chroot-setup-commands' => ['/home/marco/Dev/Script/schroot-setup.sh'],
+    #'chroot-setup-commands' => ['sed -i "s/enable: true/enable: false/" /etc/pkgbinarymangler/stripfiles.conf || true'],
+    'chroot-update-failed-commands' => [],
+    'finished-build-commands' => [],
+    'post-build-commands' => [],
+    'pre-build-commands' => [],
+    'starting-build-commands' => ['sed -i "s/enable: true/enable: false/" /etc/pkgbinarymangler/stripfiles.conf || true']
+};
+
 
 ##
 ## SBUILD BEHAVIOUR

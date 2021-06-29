@@ -371,7 +371,7 @@ fi
 __my_default_zsh_settings() {
   alias list_zsh_completions='for command completion in ${(kv)_comps}; do printf "%-32s %s\n" $command $completion; done | sort'
 
-  setopt hist_ignore_space
+  setopt HIST_IGNORE_SPACE
   HISTSIZE=$ZSH_MAX_HISTSIZE
   SAVEHIST=$HISTSIZE
   HIST_STAMPS="dd/mm/yyyy"
@@ -730,14 +730,10 @@ __my_zsh_plugins_load() {
       done
 
       __zinit_plugin_init_callback() {
-        # FIXME, doesn't handle $ZINIT[CUR_PLUGIN]
-        # https://github.com/zdharma/zinit/issues/356
-        if [[ "${PWD:t}" == *"---zsh-bash-completions-fallback" ]]; then
-          export ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_DISABLE=true
+        if [[ "$ZINIT[CUR_PLUGIN]" == "zsh-bash-completions-fallback" ]]; then
+          typeset -g ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_DISABLE=true
           __my_zinit_init_completions
-        elif [[ "${PWD:t}" == *"---fast-syntax-highlighting" ]]; then
-          __my_zinit_init_completions
-        elif [[ "${PWD:t}" == *"---zsh-autosuggestions" ]]; then
+        #   __my_zinit_init_completions
           (( ${+functions[_zsh_autosuggest_start]} )) && \
             _zsh_autosuggest_start
         fi

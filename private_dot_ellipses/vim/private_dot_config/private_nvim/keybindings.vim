@@ -193,6 +193,10 @@ inoremap <C-A-S-j> <C-o>:m+1<CR>
 nnoremap <C-A-S-j> :m+1<CR>
 vnoremap <C-A-S-j> :m '>+1<CR>
 
+"Support ctrl+S to save
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <C-o>:w<CR>
+
 """ End of VIM traitor side """
 
 

@@ -69,6 +69,11 @@ $external_commands = {
     'starting-build-commands' => ['sed -i "s/enable: true/enable: false/" /etc/pkgbinarymangler/stripfiles.conf || true']
 };
 
+$lintian_opts = [
+    '--suppress-tags',
+    'bad-distribution-in-changes-file,distribution-and-experimental-mismatch,changelog-distribution-does-not-match-changes-file,unreleased-changes',
+];
+
 
 ##
 ## SBUILD BEHAVIOUR

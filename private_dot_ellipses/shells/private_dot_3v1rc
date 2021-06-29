@@ -844,6 +844,9 @@ export GIT_AUTHOR_NAME="Marco Trevisan (Treviño)"
 export GIT_AUTHOR_EMAIL="mail@3v1n0.net"
 export GIT_PAGER="$(command -v tig &>/dev/null && echo "sed 's/\x1b\[[0-9;]*m//g' | tig" || echo /usr/bin/less)"
 
+# RR traces in temporary path
+export _RR_TRACE_DIR="/tmp/rr-traces"
+
 # More global env
 export EDITOR="$(command -v nvim || command -v vim || command -v ne || command -v nano)"
 export VISUAL_EDITOR="$(command -v code || command -v subl || command -v nvim || command -v vim)"

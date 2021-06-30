@@ -171,6 +171,11 @@ visit_directory() {
         fi
     fi
 
+    if [ -z "$(ls -A $dir)" ]; then
+        generate_link "$dir" "$current_pkg" "$prevfull"
+        return;
+    fi
+
     for f in "$dir"/*; do
         if [ -L "$f" ]; then
             continue

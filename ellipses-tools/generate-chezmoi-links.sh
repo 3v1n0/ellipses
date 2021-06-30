@@ -138,13 +138,16 @@ visit_directory() {
     dir="$1"
     bdir="$(b_basename "$dir")"
     pkg="$(get_real_name "$bdir")"
+    local dir="$1"
+    local bdir="$(b_basename "$dir")"
+    local pkg="$(get_real_name "$bdir")"
 
     if ! [ -d "$dir" ] || [[ "${pkg[1]}" == "." ]]; then
         echo "Ignoring path $i"
         return
     fi
 
-    prevfull="$fullpkg"
+    local prevfull="$fullpkg"
     fullpkg+="$pkg/"
 
     if [ -z "$current_pkg" ]; then
@@ -182,14 +185,16 @@ visit_directory() {
             fi
 
             if [ -d "$HOME/$allsubs/$subdir" ] && ! [ -L "$HOME/$allsubs/$subdir" ]; then
-                presubs=$allsubs
+                local presubs=$allsubs
                 allsubs+="$subdir/"
-                predir=$current_dir
+                local predir=$current_dir
+                local oldfull=$fullpkg
 
                 visit_directory "$current_dir"
 
                 allsubs=$presubs
                 current_dir=$predir
+                fullpkg=$oldfull
             else
                 generate_link "$current_dir" "$current_pkg" "$fullpkg"
             fi

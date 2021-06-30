@@ -1,1 +1,0 @@
-../pastero.py

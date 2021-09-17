@@ -88,7 +88,11 @@ module_mesonargs['gstreamer'] = '-Dgtk_doc=disabled'
 module_mesonargs['json-glib'] = '-Dgtk_doc=disabled'
 # module_mesonargs['gnome-shell'] = '-Db_sanitize=address --libdir lib  --buildtype=debugoptimized -Dgtk_doc=false -Ddisable_gtkdoc=true -Denable-man=false -Denable-docs=false'
 # module_mesonargs['mutter'] = '--buildtype=debug -Db_sanitize=address -Dintrospection=false'
-module_mesonargs['mutter'] = '--buildtype=debug -Dprofiler=false'
+module_mesonargs['mutter'] = ' '.join([
+    '--buildtype=debug',
+    '-Dudev_dir={}/lib/udev/rules.d/'.format(prefix),
+])
+
 module_mesonargs['gnome-shell'] = '-Dsystemd=false' #'-Db_sanitize=address'
 module_mesonargs['gdm'] = ' '.join([
     '-Drun-dir=/opt/dev/gdm/run',

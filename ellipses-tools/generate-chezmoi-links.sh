@@ -82,7 +82,7 @@ generate_link() {
         ! [ -f "$e_abs_path/.ellipses_linkdir" ] &&
         ! grep -qs '\b'"$name"'\b' "$real_ellipses/$pkg/.ellipses_linkdirs"); then
         path="$e_abs_path"
-        tgt="{{ .chezmoi.homedir }}/$e_rel_path"
+        tgt="{{ .chezmoi.homeDir }}/$e_rel_path"
     else
         rel=$(realpath --relative-to="$CHEZMOI" "$f")
         path=$CHEZMOI/$rel
@@ -129,7 +129,7 @@ handle_autolinks() {
 
         local rl=$(get_real_name "$al")
 
-        tgt="{{ .chezmoi.homedir }}/$subdirs/$rl"
+        tgt="{{ .chezmoi.homeDir }}/$subdirs/$rl"
         make_link "$tgt" "$rl" "$rel_autolinks_dir/$rl" "$target_dir"
     done
 }
@@ -227,7 +227,7 @@ done
 
 
 ## Manual links
-echo "{{ .chezmoi.homedir }}/$real_ellipses/shells/.bash_history_{{ .chezmoi.hostname }}" \
+echo "{{ .chezmoi.homeDir }}/$real_ellipses/shells/.bash_history_{{ .chezmoi.hostname }}" \
     > "$CHEZMOI/symlink_dot_bash_history.tmpl"
-echo "{{ .chezmoi.homedir }}/$real_ellipses/shells/.bash_history_eternal_{{ .chezmoi.hostname }}"\
+echo "{{ .chezmoi.homeDir }}/$real_ellipses/shells/.bash_history_eternal_{{ .chezmoi.hostname }}"\
     > "$CHEZMOI/symlink_dot_bash_history_eternal.tmpl"

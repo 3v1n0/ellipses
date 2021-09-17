@@ -135,9 +135,6 @@ handle_autolinks() {
 }
 
 visit_directory() {
-    dir="$1"
-    bdir="$(b_basename "$dir")"
-    pkg="$(get_real_name "$bdir")"
     local dir="$1"
     local bdir="$(b_basename "$dir")"
     local pkg="$(get_real_name "$bdir")"

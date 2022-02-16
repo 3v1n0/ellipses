@@ -13,9 +13,9 @@ if [ -n "$ZSH_VERSION" ]; then
   typeset -g MY_ZINIT_PATH=$HOME/.zinit
   typeset -g HOSTNAME=$HOST
 
-  if [ -f "$MY_ZINIT_PATH/bin/zmodules/Src/zdharma/zplugin.so" ]; then
-    module_path+=( "$MY_ZINIT_PATH/bin/zmodules/Src" )
-    zmodload zdharma/zplugin &> /dev/null
+  if [ -f "$MY_ZINIT_PATH/module/Src/zdharma_continuum/zinit.so" ]; then
+    module_path+=( "$MY_ZINIT_PATH/module/Src" )
+    zmodload zdharma_continuum/zinit &> /dev/null
   fi
 
   # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -316,7 +316,7 @@ if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; 
   if [ ! -f $MY_ZINIT_PATH/bin/zinit.zsh ] && ((${+commands[git]})); then
     __zinit_just_installed=1
     mkdir -p $MY_ZINIT_PATH && chmod g-rwX "$MY_ZINIT_PATH" && \
-      git clone --depth=1 https://github.com/zdharma/zinit.git $MY_ZINIT_PATH/bin
+      git clone --depth=1 https://github.com/zdharma-continuum/zinit.git $MY_ZINIT_PATH/bin
   fi
 
   if [ -f $MY_ZINIT_PATH/bin/zinit.zsh ]; then
@@ -352,7 +352,7 @@ if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; 
       MY_ZINIT_USE_TURBO=true
 
     my_zinit_modules_build() {
-# atclone="zinit module build && zmodload -u fooo &> /dev/null; zmodload zdharma/zplugin" \
+# atclone="zinit module build && zmodload -u fooo &> /dev/null; zmodload zdharma-continuum/zplugin" \
       # zinit wait lucid atclone='echo Cloned in $PWD' atpull="%atclone"
       # zinit wait lucid is-snippet atclone='echo cloned!' for "$ZINIT[BIN_DIR]/zmodules"
       return
@@ -361,7 +361,7 @@ if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; 
     if [ -n "$ZINIT_MODULE_AUTO_BUILD" ]; then
       my_zinit_modules_build
     elif [ -z "$ZINIT_MODULE_BULD_WARNING_MUTE" ] && \
-      ! (( ${${(@f)"$(zmodload)"}[(I)zdharma/zplugin]} )); then
+      ! (( ${${(@f)"$(zmodload)"}[(I)zdharma_continuum/zinit]} )); then
       echo "Use 'zinit module build' to build the zinit module or add"
       echo "  ZINIT_MODULE_BULD_WARNING_MUTE=y to $HOME/.3v1rc_$HOST"
     fi
@@ -475,12 +475,12 @@ __my_plugins_preload_setup() {
   ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
   # Try using
-  # https://github.com/zdharma/fast-syntax-highlighting
+  # https://github.com/zdharma-continuum/fast-syntax-highlighting
   _my_zsh_custom_plugins=(
     zsh-users/zsh-autosuggestions
     zsh-users/zsh-completions
     3v1n0/zsh-bash-completions-fallback
-    zdharma/fast-syntax-highlighting
+    zdharma-continuum/fast-syntax-highlighting
     zsh-users/zsh-history-substring-search
   )
 
@@ -527,7 +527,7 @@ __my_plugins_preload_setup() {
       _my_omz_plugins+=(fzf)
       _my_zsh_custom_plugins+=(wfxr/forgit)
     else
-      _my_zsh_custom_plugins+=(zdharma/history-search-multi-word)
+      _my_zsh_custom_plugins+=(zdharma-continuum/history-search-multi-word)
     fi
   fi
 }

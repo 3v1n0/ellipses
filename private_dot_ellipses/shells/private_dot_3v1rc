@@ -1190,3 +1190,20 @@ fi
 [ -n "$ZSH_VERSION" ] && [ -f "$HOME/.bash_aliases" ] &&
   source "$HOME/.bash_aliases"
 
+# zsh specific aliases
+if [ -n "$ZSH_VERSION" ]; then
+  # Sufix aliases
+  alias -s txt=$EDITOR
+  alias -s md=$EDITOR
+  alias -s c=$EDITOR
+  alias -s cpp=$EDITOR
+  alias -s h=$EDITOR
+
+  if command -v xdg-open &> /dev/null; then
+    alias -s png=xdg-open
+    alias -s jpg=xdg-open
+    alias -s jpeg=xdg-open
+    alias -s gif=xdg-open
+  fi
+fi
+

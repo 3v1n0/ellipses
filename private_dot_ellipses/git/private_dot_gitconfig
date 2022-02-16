@@ -80,9 +80,12 @@
     matching-tags = "!f() { git for-each-ref --sort=creatordate --format '%(refname)' refs/tags| grep \"$1\"| sed s,^refs/tags/,,; }; f"
     last-tags = matching-tags '.*'
     last-match-tag = "!f() { git matching-tags $1 | tail -n1; }; f"
+    prev-match-tag = "!f() { git matching-tags $1 | tail -n2 | head -n1; }; f"
     last-tag = last-match-tag '.*'
     last-debian-tag = last-match-tag debian/
     last-ubuntu-tag = last-match-tag ubuntu/
+    prev-debian-tag = prev-match-tag debian/
+    prev-ubuntu-tag = prev-match-tag ubuntu/
     ubuntu-delta = "!f() { git diff $(git last-debian-tag) -- \"${1:-debian}\" ':(exclude)debian/changelog'; }; f"
     mr  = "!f() { git fetch -fu ${2:-$(git remote |grep ^upstream || echo origin)} refs/merge-requests/$1/head:MR/$1 && git checkout MR/$1; }; f"
     mr-clean = "!git for-each-ref refs/heads/MR/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
@@ -105,6 +108,8 @@
     showtag = show-ref
     smerge = "merge --no-ff --no-commit"
     st = status
+    stashgrep = "!f() { for i in `git stash list --format=\"%gd\"` ; \
+              do git stash show -p $i | grep -H --label=\"$i\" \"$@\" ; done ; }; f"
     stat = status
     switch = checkout
     tip = rev-parse --verify HEAD

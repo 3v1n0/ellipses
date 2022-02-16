@@ -23,7 +23,7 @@ modules = [ 'meta-gnome-core-shell', 'The X Window System' ]
 skip = ['WebKit', 'evolution']
 
 # what directory should the source be checked out to?
-checkoutroot = '/media/M2/GNOME'
+checkoutroot = '/data/GNOME'
 
 # the prefix to configure/install modules to (must have write access)
 prefix = '/opt/dev/GNOME'
@@ -69,7 +69,14 @@ addpath('GI_TYPELIB_PATH', '/usr/lib/x86_64-linux-gnu/girepository-1.0')
 # extra arguments to pass to all autogen.sh scripts
 # to speed up builds of GNOME, try '--disable-static --disable-gtk-doc'
 autogenargs = '--disable-static --disable-gtk-doc'
-mesonargs = '--buildtype=debugoptimized -Dgtk_doc=false -Ddisable_gtkdoc=true -Denable-man=false -Denable-docs=false'
+mesonargs_array = [
+    '--buildtype=debugoptimized',
+    '-Dgtk_doc=false',
+    # '-Ddisable_gtkdoc=true',
+    # '-Denable-man=false',
+    # '-Denable-docs=false',
+]
+mesonargs = ' '.join(mesonargs_array)
 
 # Module custom settings
 # module_autogenargs['gdm'] = '--with-run-dir=/opt/dev/gdm/run --with-log-dir=/opt/dev/gdm/log --with-udevdir=/opt/dev/gdm/udev/rules.d/'
@@ -81,20 +88,32 @@ module_autogenargs['xserver'] = '--disable-docs --disable-devel-docs --enable-xw
 
 # module_autogenargs['gjs'] = '--enable-asan --enable-ubsan'
 
-module_mesonargs['nautilus'] = '-Dtracker=false'
-module_mesonargs['gnome-control-center'] = '-Dcheese=false'
+module_mesonargs['libadwaita'] = ' '.join(mesonargs_array + [
+    '-Dvapi=false',
+])
+module_mesonargs['nautilus'] = ' '.join(mesonargs_array + [
+    '-Dtracker=false',
+    '-Dlibportal=false',
+])
+module_mesonargs['gnome-control-center'] = mesonargs + ' -Ddocumentation=false'
 module_mesonargs['gnome-settings-daemon'] = '-Dcolord=false'
-module_mesonargs['gstreamer'] = '-Dgtk_doc=disabled'
-module_mesonargs['json-glib'] = '-Dgtk_doc=disabled'
+module_mesonargs['colord-gtk'] = '-Ddocs=false -Dtests=false -Dman=false'
+module_mesonargs['gstreamer'] = mesonargs
+module_mesonargs['json-glib'] = mesonargs
+module_mesonargs['libnma'] = mesonargs + ' -Dmobile_broadband_provider_info=false -Dlibnma_gtk4=true'
+# module_mesonargs['glib'] = '-Db_sanitize=thread'
 # module_mesonargs['gnome-shell'] = '-Db_sanitize=address --libdir lib  --buildtype=debugoptimized -Dgtk_doc=false -Ddisable_gtkdoc=true -Denable-man=false -Denable-docs=false'
 # module_mesonargs['mutter'] = '--buildtype=debug -Db_sanitize=address -Dintrospection=false'
-module_mesonargs['mutter'] = ' '.join([
+module_mesonargs['mutter'] = ' '.join(mesonargs_array + [
     '--buildtype=debug',
     '-Dudev_dir={}/lib/udev/rules.d/'.format(prefix),
 ])
 
-module_mesonargs['gnome-shell'] = '-Dsystemd=false' #'-Db_sanitize=address'
-module_mesonargs['gdm'] = ' '.join([
+module_mesonargs['gnome-shell'] = ' '.join(mesonargs_array + [
+    '-Dman=false',
+    '-Dsystemd=false', #'-Db_sanitize=address'
+])
+module_mesonargs['gdm'] = ' '.join(mesonargs_array + [
     '-Drun-dir=/opt/dev/gdm/run',
     '-Dlog-dir=/opt/dev/gdm/log',
     '-Dudev-dir={}/lib/udev/rules.d/'.format(prefix),
@@ -106,14 +125,17 @@ module_mesonargs['libfprint'] = ' '.join([
     '-Dudev_hwdb_dir={}/lib/udev/hwdb.d/'.format(prefix),
     '-Dudev_rules_dir={}/lib/udev/rules.d/'.format(prefix),
 ])
-module_mesonargs['fprintd'] = ' '.join([
+module_mesonargs['fprintd'] = ' '.join(mesonargs_array + [
     '-Dsystemd=false',
     '-Dpam=true',
     '-Dpam_modules_dir={}/lib/security'.format(prefix),
     '-Ddbus_service_dir={}/share/dbus'.format(prefix),
 ])
+module_mesonargs['gtk'] = ' '.join(mesonargs_array + [
+    '-Dmedia-gstreamer=disabled',
+])
 
-module_mesonargs['gjs'] = '-Dverbose_logs=true'
+module_mesonargs['gjs'] = mesonargs + ' -Dverbose_logs=true'
 
 # Custom branches
 # branches['gnome-settings-daemon'] = ('https://github.com/jadahl/gnome-settings-daemon/', 'wip/monitor-config')

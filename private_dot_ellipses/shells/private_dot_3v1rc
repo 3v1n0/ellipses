@@ -654,6 +654,16 @@ __my_load_zsh_apps() {
     atload='alias lg="lazygit"' \
       for \
         jesseduffield/lazygit
+
+  # git-rstash
+  zinit ${__my_zinit_load_params[@]} \
+    wait=2 \
+    as=program \
+    pick="$ZPFX/bin/git-rstash" \
+    atclone='ln -sfv $PWD/git-rstash $ZPFX/bin' \
+    atpull='%atclone' \
+      for \
+        501st-alpha1/git-rstash
 }
 
 __my_plugins_loaded_callback() {

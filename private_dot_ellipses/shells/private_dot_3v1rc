@@ -360,10 +360,10 @@ if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; 
 
     if [ -n "$ZINIT_MODULE_AUTO_BUILD" ]; then
       my_zinit_modules_build
-    elif [ -z "$ZINIT_MODULE_BULD_WARNING_MUTE" ] && \
+    elif [ -z "$ZINIT_MODULE_BUILD_WARNING_MUTE" ] && \
       ! (( ${${(@f)"$(zmodload)"}[(I)zdharma_continuum/zinit]} )); then
       echo "Use 'zinit module build' to build the zinit module or add"
-      echo "  ZINIT_MODULE_BULD_WARNING_MUTE=y to $HOME/.3v1rc_$HOST"
+      echo "  ZINIT_MODULE_BUILD_WARNING_MUTE=y to $HOME/.3v1rc_$HOST"
     fi
   fi
 fi

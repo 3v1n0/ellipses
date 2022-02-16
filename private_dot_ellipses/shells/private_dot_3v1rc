@@ -1035,10 +1035,30 @@ export UNITY8_DEV="$HOME/Dev/U8"
 
 # Set pager
 export LESS_BIN=$(command -v /usr/bin/less)
+if command -v batcat &> /dev/null; then
+  if [ -n "$ZSH_VERSION" ]; then
+    alias -g bat=batcat
+  else
+    alias bat=batcat
+  fi
+fi
+
+if command -v bat &> /dev/null; then
+  alias cat=$(command -v bat)
+  export BAT_PAGER="$LESS_BIN -RF"
+  export BAT_STYLE="numbers,changes,header"
+  alias cat="bat -p"
+  #alias less=$(command -v bat)
+  #MANPAGER="sh -c 'col -bx | $(command -v bat) -l man -p'"
+fi
+
 if [ -x ~/.vim/nvimpager/DIST/bin/nvimpager ]; then
   export PAGER=~/.vim/nvimpager/DIST/bin/nvimpager
+elif command -v bat &> /dev/null; then
+  alias less=$(command -v bat)
+  MANPAGER="sh -c 'col -bx | $(command -v bat) -l man -p'"
 else
-  export PAGER=less
+  export PAGER=$LESS_BIN
   #Less settings (colors)
   #export LESS='--RAW-CONTROL-CHARS --tabs=8 -r -f -i' #-I ?
   #export LESSOPEN='| /usr/bin/lesspipe %s'

@@ -1083,7 +1083,7 @@ if [[ "$PAGER" == "less" ]] && [ -x /usr/share/source-highlight/src-hilite-lessp
         $(command -v less) "$@"
   }
 
-  less()
+  function less()
   {
     less=$(command -v less)
     has_file=false

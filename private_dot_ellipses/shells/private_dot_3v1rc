@@ -1199,11 +1199,14 @@ if [ -n "$ZSH_VERSION" ]; then
   alias -s cpp=$EDITOR
   alias -s h=$EDITOR
 
-  if command -v xdg-open &> /dev/null; then
+  if command -v xdg-open &> /dev/null && ([ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]); then
     alias -s png=xdg-open
     alias -s jpg=xdg-open
     alias -s jpeg=xdg-open
     alias -s gif=xdg-open
+    alias -s pdf=xdg-open
+    alias -s html=xdg-open
+    alias -s md=xdg-open
   fi
 fi
 

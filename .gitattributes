@@ -1,0 +1,6 @@
+# See https://github.com/github/linguist/blob/master/docs/overrides.md
+*_dot_bash* linguist-language=bash
+*_dot_zsh* linguist-language=zsh
+*_dot_3v1rc linguist-language=zsh
+*_dot_3v1rc_* linguist-language=zsh
+*_dot_vimrc* linguist-language=vim

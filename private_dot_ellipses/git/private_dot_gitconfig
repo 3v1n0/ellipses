@@ -172,10 +172,10 @@
 [url "ssh://marcotrevi@git.gnome.org/git/"]
     insteadof = gnome-git:
 
-[url "git@gitlab.gnome.org:GNOME/"]
+[url "git@ssh.gitlab.gnome.org:GNOME/"]
     insteadof = gnome:
 
-[url "git@gitlab.gnome.org:3v1n0/"]
+[url "git@ssh.gitlab.gnome.org:3v1n0/"]
     insteadof = gnome-mine:
 
 [url "git@gitlab.freedesktop.org:"]

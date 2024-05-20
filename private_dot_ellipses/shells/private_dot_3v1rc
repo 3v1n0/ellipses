@@ -665,6 +665,16 @@ __my_load_zsh_apps() {
     atpull='%atclone' \
       for \
         501st-alpha1/git-rstash
+        
+   # intofiy-info
+   zinit ${__my_zinit_load_params[@]} \
+    as=program \
+    pick="$ZPFX/bin/inotify-info" \
+    atclone='make; \
+      ln -sfv $PWD/_release/inotify-info $ZPFX/bin' \
+    atpull='%atclone' \
+      for \
+        mikesart/inotify-info
 }
 
 __my_plugins_loaded_callback() {

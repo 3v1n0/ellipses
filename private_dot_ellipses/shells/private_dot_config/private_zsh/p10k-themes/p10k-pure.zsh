@@ -150,6 +150,11 @@
     typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%F{$user_color}%n%f@%F{$host_color}%m%f"
   fi
 
+  if [ -n "$UNDER_JHBUILD" ]; then
+    host_color=81
+    typeset -g POWERLEVEL9K_DIR_FOREGROUND=40
+  fi
+
   # Show previous command duration only if it's >= 5s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=2
   # Don't show fractional seconds. Thus, 7s rather than 7.3s.

@@ -239,6 +239,10 @@
 	verbose = true
 
 [pull]
-	rebase = true
+    rebase = true
+
+[rerere]
+    enabled = true
+
 [gitubuntu]
-	lpuser = 3v1n0
+    lpuser = 3v1n0

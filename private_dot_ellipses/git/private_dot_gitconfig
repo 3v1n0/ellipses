@@ -69,7 +69,8 @@
     files = log --pretty='format:%h - %ad' --name-status --relative-date
     fixup = commit --all --amend --reuse-message=HEAD
     follow = log --follow --patch-with-stat --ignore-all-space --
-    graph-pretty = log --all --graph --pretty --oneline --decorate
+    graph-pretty = log --graph --pretty --oneline --decorate
+    gp = graph-pretty
     graph = log --graph --pretty=format:'%Cred%h%Creset-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit --date=relative --all
     glog = log --graph --decorate=full
     lab = "!lab"

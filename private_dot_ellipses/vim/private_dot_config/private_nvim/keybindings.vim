@@ -165,9 +165,9 @@ inoremap <C-K> <C-o>"_dd
 nnoremap <C-K> "_dd
 
 "Duplicate line or block"
-inoremap <C-S-o> <Esc>YPji
-nnoremap <C-S-o> YPj
-vnoremap <C-S-o> "aY$`]"ap
+inoremap <C-O> <Esc>YPji
+nnoremap <C-O> YPj
+vnoremap <C-O> "aY$`]"ap
 
 "Not nice, solve of C-O / C-I (this one is blocked by Tab rempping)
 nnoremap <C-o> <C-O>
@@ -178,20 +178,21 @@ imap <C-j> <C-o><C-n>
 nmap <C-j> <C-n>
 
 "Move line
-inoremap <C-S-up> <C-o>:m-2<CR>
-nnoremap <C-S-up> :m-2<CR>
-vnoremap <C-S-up> :m '>-2<CR> "FIXME
-inoremap <C-S-down> <C-o>:m+1<CR>
-nnoremap <C-S-down> :m+1<CR>
-vnoremap <C-S-down> :m '>+1<CR>
+inoremap <C-S-up> <C-o>:m-2<CR>==gi
+nnoremap <C-S-up> :m-2<CR>==
+vnoremap <C-S-up> :m '<-2<CR>gv=gv
+inoremap <C-S-down> <C-o>:m+1<CR>==gi
+nnoremap <C-S-down> :m+1<CR>==
+vnoremap <C-S-down> :m '>+1<CR>gv=gv
 ""vnoremap <C-S-down> V"adj"ap
 
-nnoremap <C-A-S-k> :m-2<CR>
-inoremap <C-A-S-k> <C-o>:m-2<CR>
-vnoremap <C-A-S-k> :m '>-2<CR> "FIXME
-inoremap <C-A-S-j> <C-o>:m+1<CR>
-nnoremap <C-A-S-j> :m+1<CR>
-vnoremap <C-A-S-j> :m '>+1<CR>
+"" In older nvim it worked as C-A-S-k, now need to use C-A-K
+nnoremap <C-A-K> :m-2<CR>==
+inoremap <C-A-K> <C-o>:m-2<CR>
+vnoremap <C-A-K> :m '<-2<CR>gv=gv
+inoremap <C-A-J> <C-o>:m+1<CR>
+nnoremap <C-A-J> :m+1<CR>==
+vnoremap <C-A-J> :m '>+1<CR>gv=gv
 
 "Support ctrl+S to save
 nnoremap <C-s> :w<CR>

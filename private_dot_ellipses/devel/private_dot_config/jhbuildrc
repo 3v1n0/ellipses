@@ -1,6 +1,7 @@
 # -*- mode: python -*-
 # -*- coding: utf-8 -*-
 import resource
+import sys
 from random import randint
 
 resource.setrlimit(
@@ -75,7 +76,7 @@ addpath('GI_TYPELIB_PATH', '/usr/lib/x86_64-linux-gnu/girepository-1.0')
 autogenargs = '--disable-static --disable-gtk-doc'
 mesonargs_array = [
     '--buildtype=debugoptimized',
-    '-Dgtk_doc=false',
+    # '-Dgtk_doc=false',
     # '-Ddisable_gtkdoc=true',
     # '-Denable-man=false',
     # '-Denable-docs=false',
@@ -85,7 +86,7 @@ mesonargs = ' '.join(mesonargs_array)
 # Module custom settings
 # module_autogenargs['gdm'] = '--with-run-dir=/opt/dev/gdm/run --with-log-dir=/opt/dev/gdm/log --with-udevdir=/opt/dev/gdm/udev/rules.d/'
 # module_autogenargs['mutter'] = '--enable-debug' #--enable-remote-desktop
-module_autogenargs['-shell'] = '-Db_sanitize=address' #--enable-remote-desktop
+#module_autogenargs['gnome-shell'] = '-Db_sanitize=address' #--enable-remote-desktop
 module_autogenargs['geoclue'] = '--disable-nmea-source'
 module_autogenargs['libinput'] = '--disable-documentation --enable-tests=no'
 module_autogenargs['xserver'] = '--disable-docs --disable-devel-docs --enable-xwayland --enable-kdrive --enable-kdrive-kbd --enable-kdrive-mouse --enable-glamor --enable-xephyr --disable-xvfb --disable-xnest --disable-xquartz --disable-xwin'
@@ -95,16 +96,41 @@ module_autogenargs['xserver'] = '--disable-docs --disable-devel-docs --enable-xw
 module_mesonargs['libadwaita'] = ' '.join(mesonargs_array + [
     '-Dvapi=false',
 ])
-module_mesonargs['nautilus'] = ' '.join(mesonargs_array + [
-    '-Dtracker=false',
-    '-Dlibportal=false',
-])
+# module_mesonargs['nautilus'] = ' '.join(mesonargs_array + [
+#     '-Dlibportal=false',
+# ])
 module_mesonargs['gnome-control-center'] = mesonargs + ' -Ddocumentation=false'
-module_mesonargs['gnome-settings-daemon'] = '-Dcolord=false'
+#module_mesonargs['gnome-settings-daemon'] = '-Dcolord=false'
 module_mesonargs['colord-gtk'] = '-Ddocs=false -Dtests=false -Dman=false'
-module_mesonargs['gstreamer'] = mesonargs
+module_mesonargs['gstreamer'] = ' '.join(mesonargs_array + [
+    '-Dugly=disabled',
+    '-Dbad=disabled',
+])
+module_mesonargs['gnome-desktop'] = mesonargs
+module_mesonargs['sysprof'] = mesonargs
 module_mesonargs['json-glib'] = mesonargs
 module_mesonargs['libnma'] = mesonargs + ' -Dmobile_broadband_provider_info=false -Dlibnma_gtk4=true'
+module_mesonargs['libnotify'] = ' '.join(mesonargs_array + [
+    '--buildtype=debug',
+    '-Dman=false'.format(prefix),
+])
+# module_mesonargs['glib'] = '-Db_sanitize=thread'
+module_mesonargs['libgweather'] = ' '.join(mesonargs_array + [
+    '-Dsoup2=false',
+    '-Dgtk_doc=false',
+])
+module_mesonargs['gnome-online-accounts'] = ' '.join(mesonargs_array + [
+    '-Dgtk_doc=false',
+])
+module_mesonargs['geocode-glib'] = ' '.join(mesonargs_array + [
+    '-Dsoup2=false',
+])
+module_mesonargs['pygobject'] = ' '.join(mesonargs_array + [
+    '-Dpython.platlibdir=' + prefix + '/lib/python{}.{}/dist-packages'.format(
+        sys.version_info.major, sys.version_info.minor),
+#    '-Dpython.purelibdir=' + prefix + '/lib'
+])
+
 # module_mesonargs['glib'] = '-Db_sanitize=thread'
 # module_mesonargs['gnome-shell'] = '-Db_sanitize=address --libdir lib  --buildtype=debugoptimized -Dgtk_doc=false -Ddisable_gtkdoc=true -Denable-man=false -Denable-docs=false'
 # module_mesonargs['mutter'] = '--buildtype=debug -Db_sanitize=address -Dintrospection=false'
@@ -116,6 +142,10 @@ module_mesonargs['mutter'] = ' '.join(mesonargs_array + [
 module_mesonargs['gnome-shell'] = ' '.join(mesonargs_array + [
     '-Dman=false',
     '-Dsystemd=false', #'-Db_sanitize=address'
+    # '-Dsoup2=false',
+])
+module_mesonargs['gnome-shell-extensions'] = ' '.join(mesonargs_array + [
+    '-Dextension_set=all',
 ])
 module_mesonargs['gdm'] = ' '.join(mesonargs_array + [
     '-Drun-dir=/opt/dev/gdm/run',
@@ -136,10 +166,30 @@ module_mesonargs['fprintd'] = ' '.join(mesonargs_array + [
     '-Ddbus_service_dir={}/share/dbus'.format(prefix),
 ])
 module_mesonargs['gtk'] = ' '.join(mesonargs_array + [
-    '-Dmedia-gstreamer=disabled',
+    '-Dintrospection=enabled',
+    #'-Dmedia-gstreamer=disabled',
+])
+module_mesonargs['libhandy'] = ' '.join(mesonargs_array + [
+    '-Dvapi=false',
+])
+module_mesonargs['tracker'] = ' '.join(mesonargs_array + [
+    '-Dman=false',
+    '-Ddocs=false',
+])
+module_mesonargs['libgusb'] = ' '.join(mesonargs_array + [
+    '-Ddocs=false',
+])
+module_mesonargs['NetworkManager'] = ' '.join(mesonargs_array + [
+    '-Dlibaudit=no',
+    '-Dnmtui=false',
+    '-Dsystemd_journal=false',
+    '-Dmodem_manager=false',
+    '-Dovs=false',
+    '-Dintrospection=true',
 ])
 
-module_mesonargs['gjs'] = mesonargs + ' -Dverbose_logs=true'
+module_mesonargs['gjs'] = mesonargs + ' -Dverbose_logs=true --buildtype=debug'
+
 
 # Custom branches
 # branches['gnome-settings-daemon'] = ('https://github.com/jadahl/gnome-settings-daemon/', 'wip/monitor-config')

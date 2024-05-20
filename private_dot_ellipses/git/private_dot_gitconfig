@@ -1,3 +1,6 @@
+[init]
+	defaultBranch = main
+
 [user]
 	name = Marco Trevisan (Treviño)
 	email = mail@3v1n0.net

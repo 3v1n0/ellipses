@@ -77,7 +77,7 @@
     last-ten = log -n 10 --first-parent --oneline
     logall = log --branches=*
     log-removed = log --all --full-history --
-    log-oneline-full = log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=shor
+    log-oneline-full = log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
     last-branches =  branch -v --sort=-committerdate
     matching-tags = "!f() { git for-each-ref --sort=creatordate --format '%(refname)' refs/tags| grep \"$1\"| sed s,^refs/tags/,,; }; f"
     last-tags = matching-tags '.*'

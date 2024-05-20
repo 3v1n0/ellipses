@@ -638,7 +638,7 @@ __my_load_zsh_apps() {
   zinit ${__my_zinit_load_params[@]} \
     wait=2 \
     as=program \
-    pick="$ZPFX/imgur" \
+    pick="$ZPFX/bin/imgur" \
     atclone='cp -v imgur.sh $ZPFX/bin/imgur' \
     atpull='%atclone' \
     atload=' \

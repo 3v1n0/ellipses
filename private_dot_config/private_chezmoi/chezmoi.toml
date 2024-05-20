@@ -1,5 +1,5 @@
 #{{- $email := promptString "email" -}}
-#sourceDir = "{{ .chezmoi.homedir }}/Backup/DottedFilesHL"
+#sourceDir = "{{ .chezmoi.homeDir }}/Backup/DottedFilesHL"
 #sourceDir = "/home/marco/Backup/DottedFilesHL"
 encryption = "gpg"
 

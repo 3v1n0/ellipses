@@ -30,8 +30,12 @@ prefix = '/opt/dev/GNOME'
 
 # Extra modules
 moduleset = [moduleset,
-             'https://cgit.freedesktop.org/xorg/util/modular/plain/xorg.modules',
-             checkoutroot + '/extra-jhbuild.modules']
+             'https://cgit.freedesktop.org/xorg/util/modular/plain/xorg.modules']
+
+extra_modules = os.path.join(checkoutroot, 'extra-jhbuild.modules')
+
+if os.path.exists(extra_modules):
+    moduleset.append(extra_modules)
 
 xdg_cache_home = os.path.join(checkoutroot, '_CACHE')
 tarballdir = os.path.join(xdg_cache_home, 'downloads')

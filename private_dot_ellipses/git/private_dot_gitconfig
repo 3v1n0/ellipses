@@ -193,6 +193,12 @@
 [url "git@salsa.debian.org:"]
     insteadof = salsa:
 
+[url "git@git.sr.ht:~trevi/"]
+    insteadof = sourcehut:
+
+[url "git@git.sr.ht:~trevi/"]
+    insteadof = sr-ht:
+
 [bz]
     browser = firefox3
 

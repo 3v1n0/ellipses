@@ -686,6 +686,15 @@ __my_load_zsh_apps() {
     atpull='%atclone' \
       for \
         newren/git-filter-repo
+
+  zinit ${__my_zinit_load_params[@]} \
+    wait=2 \
+    as"command" \
+    from"gh-r" \
+    bpick"*$(gcc -dumpmachine|cut -f1 -d-)-*-linux-gnu.tar.gz" \
+    mv"delta-*/delta -> delta" \
+      for \
+        dandavison/delta
 }
 
 __my_plugins_loaded_callback() {

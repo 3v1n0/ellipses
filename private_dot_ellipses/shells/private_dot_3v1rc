@@ -899,6 +899,11 @@ export SUDO_EDITOR=$EDITOR
 
 export FE_IMAP_NAME=trevi@mypec.eu
 
+export GOPATH=/tmp/go-path
+export CARGO_HOME=/tmp/cargo-home
+export PUB_CACHE=/tmp/pub-cache
+export PATH=/tmp/pub-cache/bin:$PATH
+
 [[ "$VISUAL_EDITOR" == *"code" ]] && VISUAL=+" --wait"
 # export VISUAL=$VISUAL_EDITOR -- disable this or will always be the ugly GUI!
 

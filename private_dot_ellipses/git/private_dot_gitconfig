@@ -183,16 +183,16 @@
 [url "git@ssh.gitlab.gnome.org:3v1n0/"]
     insteadof = gnome-mine:
 
-[url "git@gitlab.freedesktop.org:"]
+[url "git@ssh.gitlab.freedesktop.org:"]
     insteadof = fdo:
 
-[url "git@gitlab.freedesktop.org:3v1n0/"]
+[url "git@ssh.gitlab.freedesktop.org:3v1n0/"]
     insteadof = fdo-mine:
 
 [url "ssh://git@pagure.io/forks/marcotrevisan/"]
     insteadof = pagure:
 
-[url "git@salsa.debian.org:3v1n0-guest/"]
+[url "git@salsa.debian.org:3v1n0/"]
     insteadof = salsa-mine:
 
 [url "git@salsa.debian.org:"]

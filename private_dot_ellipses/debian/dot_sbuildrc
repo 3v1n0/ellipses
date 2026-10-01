@@ -62,6 +62,7 @@ $external_commands = {
     'chroot-cleanup-commands' => [],
     #'chroot-setup-commands' => ['/home/marco/Dev/Script/schroot-setup.sh'],
     #'chroot-setup-commands' => ['sed -i "s/enable: true/enable: false/" /etc/pkgbinarymangler/stripfiles.conf || true'],
+    #'chroot-setup-commands' => ['sed -i "s,http://.*archive\.ubuntu\.com,http://mirror.raiolanetworks.com,g" /etc/apt/sources.list.d/*.list /etc/apt/sources.list || true'],
     'chroot-update-failed-commands' => [],
     'finished-build-commands' => [],
     'post-build-commands' => [],

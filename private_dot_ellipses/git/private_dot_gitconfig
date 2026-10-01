@@ -62,7 +62,8 @@
     cbr = current-branch
     di = diff
     diffc = diff --cached
-    diff-side-by-side = "!f() { git difftool $* -y -x 'colordiff -y -W $(tput cols)' | /usr/bin/less -R; }; f"
+    #diff-side-by-side = "!f() { git difftool $* -y -x 'colordiff -y -W $(tput cols)' | /usr/bin/less -R; }; f"
+    diff-side-by-side = "!f() { git diff $* | delta --features=side-by-side; }; f"
     diffh = diff HEAD
     diffstat = diff --stat
     diffpaste = "!f(){ git diff $* | pastebinit -f diff; }; f"
@@ -74,7 +75,7 @@
     follow = log --follow --patch-with-stat --ignore-all-space --
     graph-pretty = log --graph --pretty --oneline --decorate
     gp = graph-pretty
-    graph = log --graph --pretty=format:'%Cred%h%Creset-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit --date=relative --all
+    graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit --date=relative --all
     glog = log --graph --decorate=full
     lab = "!lab"
     last = log -1 HEAD
@@ -82,6 +83,7 @@
     logall = log --branches=*
     log-removed = log --all --full-history --
     log-oneline-full = log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
+    lg = log-oneline-full
     last-branches =  branch -v --sort=-committerdate
     matching-tags = "!f() { git for-each-ref --sort=creatordate --format '%(refname)' refs/tags| grep \"$1\"| sed s,^refs/tags/,,; }; f"
     last-tags = matching-tags '.*'

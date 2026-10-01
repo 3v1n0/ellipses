@@ -699,6 +699,26 @@ __my_load_zsh_apps() {
     mv"delta-*/delta -> delta" \
       for \
         dandavison/delta
+
+  zinit ${__my_zinit_load_params[@]} \
+    wait=2 \
+    as"command" \
+    from"gh-r" \
+    bpick"*_$(uname | awk '{print tolower($0)}')_$(dpkg --print-architecture).tar.*" \
+    atpull"gh extension install github/gh-copilot --force"\
+    mv"gh_*/bin/gh -> gh" \
+      for \
+        cli/cli
+
+  zinit ${__my_zinit_load_params[@]} \
+    wait=2 \
+    as"command" \
+    from"gh-r" \
+    bpick"*$(uname | awk '{print tolower($0)}')-$(dpkg --print-architecture | sed 's,amd,x,').tar.*" \
+    atclone='mv copilot copilot.real' \
+    atpull='%atclone' \
+      for \
+        @github/copilot-cli
 }
 
 __my_plugins_loaded_callback() {

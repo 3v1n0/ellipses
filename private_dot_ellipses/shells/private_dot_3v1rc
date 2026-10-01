@@ -1286,3 +1286,31 @@ if [ "$_my_current_shell" = "zsh" ]; then
   fi
 fi
 
+if [ "$TERM" = xterm-ghostty ]; then
+  if [ -v SCHROOT_CHROOT_NAME ] || [ -v SSH_TTY ]; then
+    typeset -g TERM=xterm-256color
+  fi
+
+  fallback_programs=(
+    ssh
+    matterhorn
+    snap
+    flatpak
+    lxc
+    opencode
+  )
+
+  for cmd in "${fallback_programs[@]}"; do
+    real_cmd=$(command -v "$cmd" 2>/dev/null)
+    if [ -n "$cmd" ]; then
+      alias $cmd="env TERM=xterm-256color $real_cmd"
+    fi
+  done
+fi
+
+if [[ "$GHOSTTY_BIN_DIR" == /snap/ghostty/* ]]; then
+  unset GDK_PIXBUF_MODULE_FILE
+  unset XDG_CACHE_HOME
+  unset XDG_CONFIG_HOME
+  unset XDG_DATA_HOME
+fi

@@ -31,7 +31,8 @@ prefix = '/opt/dev/GNOME'
 
 # Extra modules
 moduleset = [moduleset,
-             'https://cgit.freedesktop.org/xorg/util/modular/plain/xorg.modules']
+             'https://gitlab.freedesktop.org/xorg/util/modular/-/raw/master/xorg.modules',
+]
 
 extra_modules = os.path.join(checkoutroot, 'extra-jhbuild.modules')
 

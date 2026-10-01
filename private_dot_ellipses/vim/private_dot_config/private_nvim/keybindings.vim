@@ -141,6 +141,7 @@ nnoremap <C-P> :CtrlPCmdPalette
 
 "Remap Ctrl+Backspace to Ctrl+W to delete word"
 noremap! <C-H> <C-w>
+noremap! <C-BS> <C-w>
 vnoremap <BS> "_d
 
 "Use backspace in normal mode"
@@ -162,12 +163,17 @@ noremap <S-Del> "_dw
 
 "Delete (and forget) line
 inoremap <C-K> <C-o>"_dd
+inoremap <C-S-K> <C-o>"_dd
 nnoremap <C-K> "_dd
+nnoremap <C-S-K> "_dd
 
 "Duplicate line or block"
-inoremap <C-O> <Esc>YPji
-nnoremap <C-O> YPj
-vnoremap <C-O> "aY$`]"ap
+inoremap <C-O> <Esc>:copy .<CR>i
+inoremap <C-S-O> <Esc>:copy .<CR>i
+nnoremap <C-O> :copy .<CR>
+nnoremap <C-S-O> :copy .<CR>
+vnoremap <C-O> :copy '><CR>
+vnoremap <C-S-O> :copy '><CR>
 
 "Not nice, solve of C-O / C-I (this one is blocked by Tab rempping)
 nnoremap <C-o> <C-O>
@@ -188,11 +194,17 @@ vnoremap <C-S-down> :m '>+1<CR>gv=gv
 
 "" In older nvim it worked as C-A-S-k, now need to use C-A-K
 nnoremap <C-A-K> :m-2<CR>==
+nnoremap <M-C-S-K> :m-2<CR>==
 inoremap <C-A-K> <C-o>:m-2<CR>
+inoremap <M-C-S-K> <C-o>:m-2<CR>
 vnoremap <C-A-K> :m '<-2<CR>gv=gv
+vnoremap <M-C-S-K> :m '<-2<CR>gv=gv
 inoremap <C-A-J> <C-o>:m+1<CR>
+inoremap <M-C-S-J> <C-o>:m+1<CR>
 nnoremap <C-A-J> :m+1<CR>==
+nnoremap <M-C-S-J> :m+1<CR>==
 vnoremap <C-A-J> :m '>+1<CR>gv=gv
+vnoremap <M-C-S-J> :m '>+1<CR>gv=gv
 
 "Support ctrl+S to save
 nnoremap <C-s> :w<CR>

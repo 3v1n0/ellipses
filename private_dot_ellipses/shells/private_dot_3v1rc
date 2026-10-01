@@ -695,7 +695,7 @@ __my_load_zsh_apps() {
     wait=2 \
     as"command" \
     from"gh-r" \
-    bpick"*$(gcc -dumpmachine|cut -f1 -d-)-*-linux-gnu.tar.gz" \
+    bpick"*$(uname -m)-*-$(uname | awk '{print tolower($0)}')-gnu.tar.gz" \
     mv"delta-*/delta -> delta" \
       for \
         dandavison/delta

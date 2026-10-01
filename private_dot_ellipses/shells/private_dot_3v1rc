@@ -14,6 +14,7 @@ if [ "$_my_current_shell" = "zsh" ]; then
   typeset -g MY_ZSH_CONFIG_PATH=${ZDOTDIR:-$HOME/.config/zsh}
   typeset -g MY_ZINIT_PATH=$HOME/.zinit
   typeset -g HOSTNAME=$HOST
+  typeset -g TIMEFMT=$'================\nCPU\t%P\nuser\t%*U\nsystem\t%*S\ntotal\t%*E'
 
   if [ -f "$MY_ZINIT_PATH/module/Src/zdharma_continuum/zinit.so" ]; then
     module_path+=( "$MY_ZINIT_PATH/module/Src" )

@@ -1,8 +1,15 @@
 .clangd
 .cache
 .vscode
+!.vscode/*.json.default
 .eslintcache*
 compile_commands.json
+
+# Rust stuff
+debug/.fingerprint
+debug/deps
+debug/build
+debug/incremental
 
 _BUILD
 _BUILD_*
@@ -12,7 +19,7 @@ _build*
 builddir
 objdir
 obj-*-linux-gnu
-build-aux
+!build-aux
 autom4te.cache
 
 config.h.in

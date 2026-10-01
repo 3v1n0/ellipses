@@ -59,6 +59,9 @@ os.environ['MALLOC_PERTURB_'] = str(randint(0x01, 0xff))
 os.environ['TRACKER_TEST_DOMAIN_ONTOLOGY_RULE'] = 'foo'
 os.environ['NO_AT_BRIDGE'] = '1'
 
+os.environ['XDP_VALIDATE_ICON_INSECURE'] = '1'
+os.environ['XDP_VALIDATE_SOUND_INSECURE'] = '1'
+
 # custom CFLAGS / environment pieces for the build
 # os.environ['CFLAGS'] = '-Wall -g -O0'
 

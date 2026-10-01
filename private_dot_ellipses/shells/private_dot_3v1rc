@@ -8,7 +8,9 @@ esac
 # [ -z "$PS1" ] && return
 [ -n "$SNAP" ] && [ "$HOME" != "/home/$USER" ] && return
 
-if [ -n "$ZSH_VERSION" ]; then
+_my_current_shell=$(cat /proc/$$/comm)
+
+if [ "$_my_current_shell" = "zsh" ]; then
   typeset -g MY_ZSH_CONFIG_PATH=${ZDOTDIR:-$HOME/.config/zsh}
   typeset -g MY_ZINIT_PATH=$HOME/.zinit
   typeset -g HOSTNAME=$HOST
@@ -27,10 +29,10 @@ if [ -n "$ZSH_VERSION" ]; then
 fi
 
 # Set bash history size and update it on each "enter"
-if [ -n "$BASH_VERSION" ]; then
+if [ "$_my_current_shell" = "bash" ]; then
   HISTFILE=$HOME/.bash_history_eternal
   export HISTSIZE=
-elif [ -n "$ZSH_VERSION" ]; then
+elif [ "$_my_current_shell" = "zsh" ]; then
   HISTFILE=$MY_ZSH_CONFIG_PATH/.zsh_history_eternal_$HOST
   ZSH_MAX_HISTSIZE=999999999
   HISTSIZE=$ZSH_MAX_HISTSIZE
@@ -312,7 +314,7 @@ fi
 # Set this to disable ZINIT
 # MY_NO_ZINIT=true
 
-if [ -n "$ZSH_VERSION" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; then
+if [ "$_my_current_shell" = "zsh" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO_ZINIT" ]; then
   if [ ! -f $MY_ZINIT_PATH/bin/zinit.zsh ] && ((${+commands[git]})); then
     __zinit_just_installed=1
     mkdir -p $MY_ZINIT_PATH && chmod g-rwX "$MY_ZINIT_PATH" && \
@@ -814,7 +816,7 @@ __my_zsh_plugins_load() {
   fi
 }
 
-if [ -n "$ZSH_VERSION" ]; then
+if [ "$_my_current_shell" = "zsh" ]; then
     __my_plugins_preload_setup
     __my_theme_preload_setup
 
@@ -898,10 +900,10 @@ export FE_IMAP_NAME=trevi@mypec.eu
 [[ "$VISUAL_EDITOR" == *"code" ]] && VISUAL=+" --wait"
 # export VISUAL=$VISUAL_EDITOR -- disable this or will always be the ugly GUI!
 
-my_editor_cmd=$([ -n "$ZSH_VERSION" ] && echo ${EDITOR:t} || basename $EDITOR)
+my_editor_cmd=$([ "$_my_current_shell" = "zsh" ] && echo ${EDITOR:t} || basename $EDITOR)
 alias nano=$my_editor_cmd
 
-if [ -n "$ZSH_VERSION" ]; then
+if [ "$_my_current_shell" = "zsh" ]; then
   alias -s md=$EDITOR
   alias -s json=$EDITOR
   alias -s {ts,js}=$VISUAL_EDITOR
@@ -954,7 +956,7 @@ export_dev_paths() {
   fi
 }
 
-[ -z "$ZSH_VERSION" ] || [ -z "$MY_ZINIT_USE_TURBO" ] &&
+[ "$_my_current_shell" = "zsh" ] || [ -z "$MY_ZINIT_USE_TURBO" ] &&
   export_dev_paths
 
 # Replace cd with pushd https://gist.github.com/mbadran/130469
@@ -1011,11 +1013,11 @@ push_cd() {
   fi
 }
 
-if [ -n "$BASH_VERSION" ]; then
+if [ "$_my_current_shell" = "bash" ]; then
   # replace standard `cd` with enhanced version, ensure tab-completion works
   alias cd=push_cd
   complete -d cd
-elif [ -n "$ZSH_VERSION" ]; then
+elif [ "$_my_current_shell" = "zsh" ]; then
   (( ${+aliases[cd]} )) && unalias cd
   (( ${+functions[cd]} )) && unfunction cd
   __cd() {
@@ -1067,7 +1069,7 @@ export UNITY8_DEV="$HOME/Dev/U8"
 # Set pager
 export LESS_BIN=$(command -v /usr/bin/less)
 if command -v batcat &> /dev/null; then
-  if [ -n "$ZSH_VERSION" ]; then
+  if [ "$_my_current_shell" = "zsh" ]; then
     alias -g bat=batcat
   else
     alias bat=batcat
@@ -1204,7 +1206,7 @@ FZF_CTRL_T_OPTS+=" "$FZF_ACCEPT_ARROWS_OPTS
 FZF_ALT_C_OPTS+=" "$FZF_ACCEPT_ARROWS_OPTS
 
 
-if [ -n "$ZSH_VERSION" ]; then
+if [ "$_my_current_shell" = "zsh" ]; then
   # FIXME
   function _jhbuild() {
     shift words
@@ -1218,11 +1220,11 @@ if [ -n "$ZSH_VERSION" ]; then
 fi
 # Use fzf to autocomplete all the times https://github.com/marlonrichert/zsh-autocomplete
 
-[ -n "$ZSH_VERSION" ] && [ -f "$HOME/.bash_aliases" ] &&
+[ "$_my_current_shell" = "zsh" ] && [ -f "$HOME/.bash_aliases" ] &&
   source "$HOME/.bash_aliases"
 
 # zsh specific aliases
-if [ -n "$ZSH_VERSION" ]; then
+if [ "$_my_current_shell" = "zsh" ]; then
   # Sufix aliases
   alias -s txt=$EDITOR
   alias -s md=$EDITOR

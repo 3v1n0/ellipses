@@ -15,7 +15,7 @@
 $maintainer_name='Marco Trevisan (Treviño) <marco@ubuntu.com>';
 
 # Name to use as override in .changes file for the Changed-By: field.
-$uploader_name='Marco Trevisan (Treviño) <marco@marco.com>';
+$uploader_name='Marco Trevisan (Treviño) <marco@ubuntu.com>';
 
 # Key ID to use in .changes for the current upload.
 # It overrides both $maintainer_name and $uploader_name

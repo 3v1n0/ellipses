@@ -372,6 +372,22 @@ if [ "$_my_current_shell" = "zsh" ] && ! [[ -v ZINIT[BIN_DIR] ]] && [ -z "$MY_NO
   fi
 fi
 
+arch_triplet() {
+  if command -v dpkg-architecture &>/dev/null; then
+    dpkg-architecture -qDEB_HOST_MULTIARCH
+    return
+  fi
+  if command -v gcc &>/dev/null; then
+    gcc -dumpmachine
+    return
+  fi
+  if command -v clang &>/dev/null; then
+    clang -dumpmachine | sed s/pc-//
+    return
+  fi
+  echo "$(name -m)-$(uname | awk '{print tolower($0)}')-gnu"
+}
+
 __my_default_zsh_settings() {
   alias list_zsh_completions='for command completion in ${(kv)_comps}; do printf "%-32s %s\n" $command $completion; done | sort'
 

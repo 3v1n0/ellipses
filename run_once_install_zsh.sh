@@ -29,12 +29,12 @@ if [ -e "$HOME/.bash_history" ] || [ -e "$HOME/.bash_history_eternal_$HOSTNAME" 
   source "$HOME/.zshenv"
   set -e
 
+  MY_ZSH_CONFIG_PATH=${ZDOTDIR:-$HOME/.config/zsh}
+  [ -e "$MY_ZSH_CONFIG_PATH" ] || MY_ZSH_CONFIG_PATH=$HOME
+
   if [ "$(wc -l "$MY_ZSH_CONFIG_PATH/.zsh_history_eternal_$HOSTNAME")" -gt 100 ]; then
     exit 0
   fi
-
-  MY_ZSH_CONFIG_PATH=${ZDOTDIR:-$HOME/.config/zsh}
-  [ -e "$MY_ZSH_CONFIG_PATH" ] || MY_ZSH_CONFIG_PATH=$HOME
 
   for i in "$HOME/.bash_history"{,_$HOSTNAME} \
            "$HOME/.bash_history_eternal"{,_$HOSTNAME}; do

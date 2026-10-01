@@ -37,6 +37,7 @@ elif [ "$_my_current_shell" = "zsh" ]; then
   ZSH_MAX_HISTSIZE=999999999
   HISTSIZE=$ZSH_MAX_HISTSIZE
   SAVEHIST=$HISTSIZE
+  HISTORY_IGNORE="(ls|cd|top|htop|exit|bg|fg|history|clear)"
 fi
 
 HISTFILESIZE=
